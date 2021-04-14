@@ -7,7 +7,7 @@
 using namespace sf;
 
 //gravity
-Vector2 gravity=Vector2(0,-9.8);
+sf::Vector2f gravity(0,-9.8);
 
 //position
 verlet(obj){
