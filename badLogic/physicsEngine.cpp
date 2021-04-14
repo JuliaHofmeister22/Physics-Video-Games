@@ -3,20 +3,17 @@
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
-
+#include "physicsEngine.h"
 using namespace sf;
 
-//gravity
-sf::Vector2f gravity(0,-9.8);
-
 //position
-verlet(obj){
-	obj.position = obj.position+obj.velocity*changeT+
-		0.5*obj.acceleration*changeT^2;
-	halfV = obj.velocity+0.5*obj.acceleration*changeT;
-	//change acceleration??
-	obj.velocity = halfV+0.5*obj.acceleration*changeT;
-}
+//verlet(obj){
+//	obj.position = obj.position+obj.velocity*changeT+
+//		0.5*obj.acceleration*changeT^2;
+//	halfV = obj.velocity+0.5*obj.acceleration*changeT;
+//	//change acceleration??
+//	obj.velocity = halfV+0.5*obj.acceleration*changeT;
+//}
 
 //applying forces and pulses-spring mass
 //collision
