@@ -5,6 +5,7 @@
 
 using namespace sf;
 
-inline float gravity = -0.0098;
+
+inline float gravity = -9.8;
 
 

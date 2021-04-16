@@ -6,6 +6,14 @@
 
 using namespace sf;
 
+Clock clock;
+Time time1 = clock.restart();
+
+time1 = clock.restart();
+
+//create ball object with shape, position, radius, static, color, mass attributes
+//create rect object with shape, position, width, height, static, color, mass attributes
+
 int main()
 {
     RenderWindow window(VideoMode(400, 400), "Gravity Demo");
@@ -14,7 +22,7 @@ int main()
     ball.setRadius(20.0); 
     ball.setFillColor(Color::Green);
 
-    float ballGravity = gravity;
+    float ballGravity = gravity;//multiply gravity by time1??
 
     RectangleShape ground;
     ground.setPosition(0,370);
@@ -31,9 +39,11 @@ int main()
                 window.close();
         }
 
-	if (ball.getPosition().y+(ball.getRadius()*2) >= ground.getPosition().y) {
-		ballGravity = 0.0;
-	}
+	//call collision(ball, ground, time1) from engine
+
+	//if (ball.getPosition().y+(ball.getRadius()*2) >= ground.getPosition().y) {
+	//	ballGravity = 0.0;
+	//}
 	ball.setPosition(ball.getPosition().x, ball.getPosition().y-ballGravity);
 	window.clear();
         window.draw(ball);
