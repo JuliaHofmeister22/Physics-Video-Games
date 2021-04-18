@@ -2,32 +2,45 @@
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
+#include <ctime>
+#include <string>
+#include <unordered_map>
 #include "physicsEngine.h"
-
+#include <iostream>
 using namespace sf;
-
-Clock clock;
-Time time1 = clock.restart();
-
-time1 = clock.restart();
-
-//create ball object with shape, position, radius, static, color, mass attributes
-//create rect object with shape, position, width, height, static, color, mass attributes
 
 int main()
 {
+
+std::unordered_map<std::string, float> ball = {
+        {"shape", 1.0},
+        {"x", 200},
+        {"y", 200},
+        {"radius", 20.0},
+        {"static", 0.0}
+};
+
+std::unordered_map<std::string, float> ground = {
+        {"shape", 2.0},
+        {"x", 0.0},
+        {"y", 370.0},
+        {"width", 400.0},
+        {"height", 30.0},
+        {"static", 1.0}
+};
+    float pin = clock();
     RenderWindow window(VideoMode(400, 400), "Gravity Demo");
-    CircleShape ball;
-    ball.setPosition(200, 200);
-    ball.setRadius(20.0); 
-    ball.setFillColor(Color::Green);
+    CircleShape player;
+    player.setPosition(ball["x"], ball["y"]);
+    player.setRadius(ball["radius"]); 
+    player.setFillColor(Color::Green);
 
     float ballGravity = gravity;//multiply gravity by time1??
 
-    RectangleShape ground;
-    ground.setPosition(0,370);
-    ground.setSize(Vector2f(400,30));
-    ground.setFillColor(Color::Blue);
+    RectangleShape ground_1;
+    ground_1.setPosition(ground["x"], ground["y"]);
+    ground_1.setSize(Vector2f(ground["width"],ground["height"]));
+    ground_1.setFillColor(Color::Blue);
 
 
     while (window.isOpen())
@@ -39,15 +52,15 @@ int main()
                 window.close();
         }
 
-	//call collision(ball, ground, time1) from engine
+	collision(ball, ground, pin);
 
 	//if (ball.getPosition().y+(ball.getRadius()*2) >= ground.getPosition().y) {
 	//	ballGravity = 0.0;
 	//}
-	ball.setPosition(ball.getPosition().x, ball.getPosition().y-ballGravity);
+	player.setPosition(player.getPosition().x, player.getPosition().y-ballGravity);
 	window.clear();
-        window.draw(ball);
-	window.draw(ground);
+        window.draw(player);
+	window.draw(ground_1);
         window.display();
     }
 
