@@ -4,42 +4,55 @@
 #include <unistd.h>
 #include <ctime>
 #include <string>
-#include <unordered_map>
-#include "physicsEngine.h"
 #include <iostream>
+#include "physicsEngine.h"
+
 using namespace sf;
 
 int main()
 {
+    Collider ball;
+    ball.shape=0;
+    ball.x=200.0;
+    ball.y=200.0;
+    ball.radius=20.0;
+    ball.radius2=0.0; 
+    ball.isStatic=false;
 
-std::unordered_map<std::string, float> ball = {
-        {"shape", 1.0},
-        {"x", 200},
-        {"y", 200},
-        {"radius", 20.0},
-        {"static", 0.0}
-};
+    /*Collider ball2;
+    ball2.shape=0;
+    ball2.x=200.0;
+    ball2.y=250.0;
+    ball2.radius=20.0;
+    ball2.radius2=0.0; 
+    ball2.isStatic=true;*/
 
-std::unordered_map<std::string, float> ground = {
-        {"shape", 2.0},
-        {"x", 0.0},
-        {"y", 370.0},
-        {"width", 400.0},
-        {"height", 30.0},
-        {"static", 1.0}
-};
+    Collider ground;
+    ground.shape=1;
+    ground.x=0.0;
+    ground.y=370.0;
+    ground.radius=400.0;
+    ground.radius2=30.0;
+    ground.isStatic=true;
+    
     float pin = clock();
     RenderWindow window(VideoMode(400, 400), "Gravity Demo");
+
     CircleShape player;
-    player.setPosition(ball["x"], ball["y"]);
-    player.setRadius(ball["radius"]); 
+    player.setPosition(ball.x, ball.y);
+    player.setRadius(ball.radius); 
     player.setFillColor(Color::Green);
+
+    /*CircleShape player2;
+    player2.setPosition(ball2.x, ball2.y);
+    player2.setRadius(ball2.radius); 
+    player2.setFillColor(Color::Blue);*/
 
     float ballGravity = gravity;//multiply gravity by time1??
 
     RectangleShape ground_1;
-    ground_1.setPosition(ground["x"], ground["y"]);
-    ground_1.setSize(Vector2f(ground["width"],ground["height"]));
+    ground_1.setPosition(ground.x, ground.y);
+    ground_1.setSize(Vector2f(ground.radius,ground.radius2));
     ground_1.setFillColor(Color::Blue);
 
 
@@ -52,14 +65,15 @@ std::unordered_map<std::string, float> ground = {
                 window.close();
         }
 
-	collision(ball, ground, pin);
+	if (collision(ball, ground, pin)){
+                ballGravity = 0.0;
+        };
 
-	//if (ball.getPosition().y+(ball.getRadius()*2) >= ground.getPosition().y) {
-	//	ballGravity = 0.0;
-	//}
-	player.setPosition(player.getPosition().x, player.getPosition().y-ballGravity);
+        ball.y-=ballGravity;
+	player.setPosition(ball.x, ball.y);
 	window.clear();
         window.draw(player);
+        //window.draw(player2);
 	window.draw(ground_1);
         window.display();
     }

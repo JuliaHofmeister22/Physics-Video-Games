@@ -2,14 +2,22 @@
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
-#include <unordered_map>
+
 
 
 using namespace sf;
 
-template <typename T>
-bool collision(T obj1,T obj2, float changeT);
+struct Collider {
+    int shape;
+    float x;
+    float y;
+    float radius;
+    float radius2;
+    bool isStatic;
+};
 
-inline float gravity = -9.8;
+bool collision(Collider obj1,Collider obj2, float changeT);
+
+inline float gravity = -.0098;
 
 
