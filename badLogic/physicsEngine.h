@@ -18,6 +18,8 @@ struct Collider {
 
 bool collision(Collider obj1,Collider obj2, float changeT);
 
+float mid(float a, float b, float c);
+
 inline float gravity = -.0098;
 
 

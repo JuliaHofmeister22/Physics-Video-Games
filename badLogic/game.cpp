@@ -11,6 +11,8 @@ using namespace sf;
 
 int main()
 {
+    
+
     Collider ball;
     ball.shape=0;
     ball.x=200.0;
@@ -19,13 +21,13 @@ int main()
     ball.radius2=0.0; 
     ball.isStatic=false;
 
-    /*Collider ball2;
-    ball2.shape=0;
+    Collider ball2;
+    ball2.shape=1;
     ball2.x=200.0;
-    ball2.y=250.0;
+    ball2.y=100.0;
     ball2.radius=20.0;
-    ball2.radius2=0.0; 
-    ball2.isStatic=true;*/
+    ball2.radius2=20.0; 
+    ball2.isStatic=false;
 
     Collider ground;
     ground.shape=1;
@@ -43,18 +45,18 @@ int main()
     player.setRadius(ball.radius); 
     player.setFillColor(Color::Green);
 
-    /*CircleShape player2;
+    RectangleShape player2;
     player2.setPosition(ball2.x, ball2.y);
-    player2.setRadius(ball2.radius); 
-    player2.setFillColor(Color::Blue);*/
+    player2.setSize(Vector2f(ball2.radius,ball2.radius2));
+    player2.setFillColor(Color::Red);
 
     float ballGravity = gravity;//multiply gravity by time1??
+    float boxGravity = gravity;
 
     RectangleShape ground_1;
     ground_1.setPosition(ground.x, ground.y);
     ground_1.setSize(Vector2f(ground.radius,ground.radius2));
     ground_1.setFillColor(Color::Blue);
-
 
     while (window.isOpen())
     {
@@ -67,13 +69,18 @@ int main()
 
 	if (collision(ball, ground, pin)){
                 ballGravity = 0.0;
-        };
+        }
 
+        if(collision(ball2, ball, pin)){
+                boxGravity = 0.0;
+        }
+        ball2.y-=boxGravity;
         ball.y-=ballGravity;
 	player.setPosition(ball.x, ball.y);
+        player2.setPosition(ball2.x,ball2.y);
 	window.clear();
         window.draw(player);
-        //window.draw(player2);
+        window.draw(player2);
 	window.draw(ground_1);
         window.display();
     }
