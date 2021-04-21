@@ -58,10 +58,6 @@ bool collision(Collider obj1,Collider obj2,float changeT){
 		//std::cout << dist;
 		if (dist<=obj1.radius+obj2.radius){
 			collision = true;
-			//force direction??
-			//f_dir =(obj1.getPosition()-obj2.getPosition())/dist;
-			//obj1_dir = f_dir;
-			//obj2_dir = -f_dir;
 		}
 	}
 	else if (obj1.shape == 1 and obj2.shape==1){
@@ -94,4 +90,10 @@ bool collision(Collider obj1,Collider obj2,float changeT){
         }
 	return collision;
 	//probably eventually return force and direction
+}
+
+Vector2f direction(Collider obj1,Collider obj2,float changeT, float dist){
+	Vector2f dir((Vector2f(obj1.x, obj1.y)-Vector2f(obj2.x, obj2.y))/dist);
+	Vector2f obj1_dir(dir);
+	return obj1_dir;
 }
