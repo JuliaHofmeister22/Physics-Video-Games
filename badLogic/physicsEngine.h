@@ -14,16 +14,20 @@ struct Collider {
     float radius;
     float radius2;
     bool isStatic;
-    float velocity;
-    float acceleration;
+    float velocity_y;
+    float velocity_x;
+    float acceleration_y;
+    float acceleration_x;
     float mass;
 };
 
-bool collision(Collider obj1,Collider obj2, float changeT);
+bool collision(Collider obj1,Collider obj2);
 Vector2f direction(Collider obj1,Collider obj2,float changeT);
 
 float mid(float a, float b, float c);
 
-inline float gravity = -9.8;
+void collisions(Collider &c1, Collider &c2);
+
+inline float gravity = -30;
 
 

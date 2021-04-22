@@ -16,21 +16,27 @@ int main()
 
     Collider ball;
     ball.shape=0;
-    ball.x=200.0;
+    ball.x=10.0;
     ball.y=200.0;
     ball.radius=20.0;
     ball.radius2=0.0; 
     ball.isStatic=false;
-    ball.velocity = 1.0;
-    ball.acceleration = gravity;
-    ball.mass = 15.0;
+    ball.velocity_y = 1.0;
+    ball.velocity_x = 1.0;
+    ball.acceleration_y = gravity;
+    ball.acceleration_x = 5.0;
+    ball.mass = 5.0;
 
     Collider ball2;
-    ball2.shape=1;
+    ball2.shape=0;
     ball2.x=200.0;
     ball2.y=100.0;
     ball2.radius=20.0;
-    ball2.acceleration = gravity;
+    ball2.isStatic=false;
+    ball2.velocity_y = 1.0;
+    ball2.velocity_x = -1.0;
+    ball2.acceleration_y = gravity;
+    ball2.acceleration_x = -1.0;
     ball2.mass = 6.0;
 
     Collider ground;
@@ -50,9 +56,9 @@ int main()
     player.setRadius(ball.radius); 
     player.setFillColor(Color::Green);
 
-    RectangleShape player2;
+    CircleShape player2;
     player2.setPosition(ball2.x, ball2.y);
-    player2.setSize(Vector2f(ball2.radius,ball2.radius2));
+    player2.setRadius(ball2.radius);
     player2.setFillColor(Color::Red);
 
     //float ballGravity = gravity;//multiply gravity by time1??
@@ -62,6 +68,11 @@ int main()
     ground_1.setPosition(ground.x, ground.y);
     ground_1.setSize(Vector2f(ground.radius,ground.radius2));
     ground_1.setFillColor(Color::Blue);
+
+    //Collider colliders[3] = {ball, ball2, ground};
+    /*colliders.push(ball);
+    colliders.push(ball2);
+    colliders.push(ground);*/
  
     //std::cout<<clock.getElapsedTime().asSeconds();
     
@@ -76,38 +87,39 @@ int main()
         }
         float DT=clock.getElapsedTime().asSeconds();
         
-	if (collision(ball, ground, DT)){
-                ball.acceleration= -ball.acceleration;
-                std::cout<<ball.velocity;
-                std::cout<<" ";
-                ball.y-=1;
-                //ball.velocity = -ball.velocity;
-                ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
-                std::cout<<ball.velocity;
-                //ball_dir = force_direction(ball, ground, pin);
+	if (collision(ball, ground)){
+                collisions(ball,ground);
+                //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
 
         }
 
-        /*if(collision(ball2, ball, DT)){
-                ball2.acceleration= -ball2.acceleration;
-                ball.velocity = 0;
-                ball.acceleration=0;
-                //std::cout<<ball2.velocity;
-                //std::cout<<" ";
-                ball2.y-=1;
-                ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;
-                //std::cout<<ball2.velocity;
-        }*/
-        if(ball.acceleration>gravity){
-                ball.acceleration+=(gravity*DT);
+        if (collision(ball2, ground)){
+                collisions(ball2, ground);
+                //ball.velocity_x = ball.velocity_x * 0.3;
+                //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
+
         }
-        if(ball2.acceleration>gravity){
-                ball2.acceleration+=(gravity*DT);
+
+        if(collision(ball2, ball)){
+                collisions(ball2,ball);
+                //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;
+                
         }
-        ball.velocity = ball.velocity+(ball.acceleration*DT);
-        ball2.velocity = ball2.velocity+(ball2.acceleration*DT);
-        ball2.y-=ball2.velocity*(DT);
-        ball.y-=ball.velocity*(DT);
+        //collisions(colliders);
+        if(ball.acceleration_y>gravity){
+                ball.acceleration_y+=(gravity*DT);
+        }
+        if(ball2.acceleration_y>gravity){
+                ball2.acceleration_y+=(gravity*DT);
+        }
+        ball.velocity_y = ball.velocity_y+(ball.acceleration_y*DT);
+        ball.velocity_x = ball.velocity_x+(ball.acceleration_x*DT);
+        ball.y-=ball.velocity_y*(DT);
+        ball.x+=ball.velocity_x*(DT);
+        ball2.velocity_y = ball2.velocity_y+(ball2.acceleration_y*DT);
+        ball2.velocity_x = ball2.velocity_x+(ball2.acceleration_x*DT);
+        ball2.y-=ball2.velocity_y*(DT);
+        ball2.x+=ball2.velocity_x*(DT);
         clock.restart();
 	player.setPosition(ball.x, ball.y);
         player2.setPosition(ball2.x,ball2.y);

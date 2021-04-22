@@ -50,7 +50,36 @@ float mid(float a, float b, float c){
 	}
 }
 
-bool collision(Collider obj1,Collider obj2,float changeT){
+void collisions(Collider &c1, Collider &c2){
+	if(c1.isStatic){
+		if(c1.x<c2.x && c2.y<c1.y){							
+			c2.y-=1;
+			c2.velocity_y = -c2.velocity_y * 0.8;
+			c2.velocity_x = c2.velocity_x * 0.3;
+		}
+	}
+	else if(c2.isStatic){
+		if(c2.x<c1.x && c1.y<c2.y){							
+			c1.y-=1;
+			c1.velocity_y = -c1.velocity_y * 0.8;
+			c1.velocity_x = c1.velocity_x * 0.3;
+		}
+	}
+	else if(c1.shape==0 && c2.shape==0){
+		if(c1.y<c2.y){
+			c1.y-=1;
+		}else{
+			c2.y-=1;
+		}
+		c1.velocity_y = -c1.velocity_y * 0.8;
+		c1.velocity_x = c1.velocity_x * 0.3;
+		c2.velocity_y = -c2.velocity_y * 0.8;
+		c2.velocity_x = c2.velocity_x * 0.3;
+	}
+	
+}
+
+bool collision(Collider obj1,Collider obj2){
 	bool collision = false;
 	if (obj1.shape== 0 and obj2.shape == 0){
 		float dist = sqrt(pow(obj2.x - obj1.x,2) +
