@@ -28,6 +28,8 @@ float mid(float a, float b, float c);
 
 void collisions(Collider &c1, Collider &c2);
 
+void velocityUpdate(Collider &c1, float DT);
+
 inline float gravity = -30;
 
 

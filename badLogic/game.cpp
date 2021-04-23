@@ -22,7 +22,7 @@ int main()
     ball.radius2=0.0; 
     ball.isStatic=false;
     ball.velocity_y = 1.0;
-    ball.velocity_x = 1.0;
+    ball.velocity_x = 0.5;
     ball.acceleration_y = gravity;
     ball.acceleration_x = 5.0;
     ball.mass = 5.0;
@@ -90,11 +90,24 @@ int main()
 	if (collision(ball, ground)){
                 collisions(ball,ground);
                 //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
+                if(ball.velocity_y <15 && ball.velocity_y > -15){
+                        ball.velocity_y = 0;
+                        ball.acceleration_y =0;
+                        ball.y-=0.5;
+                        std::cout<<ball.velocity_x<<std::endl;
+                        //std::cout<<ball.y+ball.radius*2<<std::endl;
+                }
 
         }
 
         if (collision(ball2, ground)){
                 collisions(ball2, ground);
+                if(ball2.velocity_y <15 && ball2.velocity_y > -15){
+                        ball2.velocity_y = 0;
+                        ball2.acceleration_y =0;
+                        ball2.y+=1;
+                        std::cout<<ball2.velocity_y<<std::endl;
+                }
                 //ball.velocity_x = ball.velocity_x * 0.3;
                 //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
 
@@ -105,21 +118,9 @@ int main()
                 //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;
                 
         }
-        //collisions(colliders);
-        if(ball.acceleration_y>gravity){
-                ball.acceleration_y+=(gravity*DT);
-        }
-        if(ball2.acceleration_y>gravity){
-                ball2.acceleration_y+=(gravity*DT);
-        }
-        ball.velocity_y = ball.velocity_y+(ball.acceleration_y*DT);
-        ball.velocity_x = ball.velocity_x+(ball.acceleration_x*DT);
-        ball.y-=ball.velocity_y*(DT);
-        ball.x+=ball.velocity_x*(DT);
-        ball2.velocity_y = ball2.velocity_y+(ball2.acceleration_y*DT);
-        ball2.velocity_x = ball2.velocity_x+(ball2.acceleration_x*DT);
-        ball2.y-=ball2.velocity_y*(DT);
-        ball2.x+=ball2.velocity_x*(DT);
+        velocityUpdate(ball, DT);
+        velocityUpdate(ball2, DT);
+       
         clock.restart();
 	player.setPosition(ball.x, ball.y);
         player2.setPosition(ball2.x,ball2.y);
