@@ -50,19 +50,58 @@ float mid(float a, float b, float c){
 	}
 }
 
+float material_velocity_x(Collider c){
+	if (c.material == "rubber"){
+		return 0.9;
+	}
+	else if (c.material == "plastic"){
+		return 0.7;
+	}
+	else if (c.material == "metal"){
+		return 0.3;
+	}
+}
+
+float material_velocity_y(Collider c){
+	if (c.material == "rubber"){
+		return 0.5;
+	}
+	else if (c.material == "plastic"){
+		return 0.3;
+	}
+	else if (c.material == "metal"){
+		return 0.1;
+	}
+}
+
+float static_absorb(Collider c){
+	if (c.material == "hard"){
+		return 0.9;
+	}
+	else if (c.material == "soft"){
+		return 0.5;
+	}
+	else if (c.material == "sticky"){
+		return 0.0;
+	}
+	else return 1.0;
+}
+
 void collisions(Collider &c1, Collider &c2){
 	if(c1.isStatic){
+		float absorb = static_absorb(c1);
 		if(c1.x<c2.x && c2.y<c1.y){							
 			c2.y-=1;
-			c2.velocity_y = -c2.velocity_y * 0.8;
-			c2.velocity_x = c2.velocity_x * 0.3;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
+			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
 		}
 	}
 	else if(c2.isStatic){
+		float absorb = static_absorb(c2);
 		if(c2.x<c1.x && c1.y<c2.y){							
 			c1.y-=1;
-			c1.velocity_y = -c1.velocity_y * 0.8;
-			c1.velocity_x = c1.velocity_x * 0.3;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = c1.velocity_x * material_velocity_y(c1);
 		}
 	}
 	else if(c1.shape==0 && c2.shape==0){
@@ -119,12 +158,6 @@ bool collision(Collider obj1,Collider obj2){
         }
 	return collision;
 	//probably eventually return force and direction
-}
-
-Vector2f direction(Collider obj1,Collider obj2,float changeT, float dist){
-	Vector2f dir((Vector2f(obj1.x, obj1.y)-Vector2f(obj2.x, obj2.y))/dist);
-	Vector2f obj1_dir(dir);
-	return obj1_dir;
 }
 
 void velocityUpdate(Collider &c1, float DT){

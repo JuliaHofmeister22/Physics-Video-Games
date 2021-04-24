@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <sstream>
 #include <unistd.h>
+#include <string>
 
 
 
@@ -19,14 +20,20 @@ struct Collider {
     float acceleration_y;
     float acceleration_x;
     float mass;
+    std::string material;
 };
 
 bool collision(Collider obj1,Collider obj2);
-Vector2f direction(Collider obj1,Collider obj2,float changeT);
 
 float mid(float a, float b, float c);
 
 void collisions(Collider &c1, Collider &c2);
+
+float material_velocity_y(Collider c);
+
+float material_velocity_x(Collider c);
+
+float static_absorb(Collider c);
 
 void velocityUpdate(Collider &c1, float DT);
 
