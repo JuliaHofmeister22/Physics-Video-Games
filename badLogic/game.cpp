@@ -8,8 +8,6 @@
 #include "physicsEngine.h"
 
 /*things to do still
-        finish velocity cut off
-        check for side and bottom collisions
         force transfer between objects
         check all collisions through a list
         buttons?
@@ -25,7 +23,7 @@ int main()
 
     Collider ball;
     ball.shape=0;
-    ball.x=10.0;
+    ball.x=50.0;
     ball.y=100.0;
     ball.radius=20.0;
     ball.radius2=0.0; 
@@ -86,13 +84,13 @@ int main()
     Collider ball4;
     ball4.shape=0;
     ball4.x=400.0;
-    ball4.y=200.0;
+    ball4.y=80.0;
     ball4.radius=20.0;
     ball4.radius2=0.0; 
     ball4.isStatic=false;
     ball4.velocity_y = -0.1;
     ball4.velocity_x = -100.0;
-    ball4.acceleration_y = 0.1;
+    ball4.acceleration_y = gravity;
     ball4.acceleration_x = 5.0;
     ball4.mass = 5.0;
     ball4.material = "rubber";
@@ -163,7 +161,7 @@ int main()
  
     //std::cout<<clock.getElapsedTime().asSeconds();
     
-    int scene = 1;
+    int scene = 0;
 
     while (window.isOpen())
     {
@@ -177,47 +175,33 @@ int main()
         if(scene==0){
                 if (collision(ball, ground)){
                         collisions(ball,ground);
+                        velocity_cutoff(ball);
                         //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
-                        if(ball.velocity_y <15 && ball.velocity_y > -15){
-                                ball.velocity_y = 0;
-                                ball.acceleration_y =0;
-                                ball.y-=0.5;
-                                std::cout<<ball.velocity_x<<std::endl;
-                                //std::cout<<ball.y+ball.radius*2<<std::endl;
-                        }
                 }
                 if (collision(ball2, ground)){
                         collisions(ball2, ground);
-                        if(ball2.velocity_y <10 && ball2.velocity_y > -10){
-                                ball2.velocity_y = 0;
-                                ball2.acceleration_y =0;
-                                ball2.y+=1;
-                                //std::cout<<ball2.velocity_y<<std::endl;
-                        }
+                        velocity_cutoff(ball2);
                         //ball.velocity_x = ball.velocity_x * 0.3;
                         //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
                 if (collision(ball3, ground)){
                         collisions(ball3, ground);
-                        if(ball3.velocity_y <10 && ball3.velocity_y > -10){
-                                ball3.velocity_y = 0;
-                                ball3.acceleration_y =0;
-                                ball3.y+=1;
-                                //std::cout<<ball3.velocity_y<<std::endl;
-                        }
+                        velocity_cutoff(ball3);
                         //ball.velocity_x = ball.velocity_x * 0.3;
                         //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
                 if (collision(ball2, ledge)){
                         collisions(ball2, ledge);
-                        if(ball2.velocity_y <10 && ball2.velocity_y > -10){
-                                ball2.velocity_y = 0;
-                                ball2.acceleration_y =0;
-                                ball2.y+=1;
-                        }
+                        velocity_cutoff(ball2);
                 }
                 if(collision(ball2, ball)){
                         collisions(ball2,ball);
+                        velocity_cutoff(ball2);
+                        //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
+                }
+                if(collision(ball, ball3)){
+                        collisions(ball,ball3);
+                        velocity_cutoff(ball);
                         //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
                 }
                 velocityUpdate(ball, DT);
@@ -226,9 +210,9 @@ int main()
         }
         if(scene==1){
                 //std::cout<<ball4.x;
-                if(collision(box,ball4)){
+                if(collision(ball4,box)){
                         //std::cout<<"here ";
-                        collisions(box,ball4);
+                        collisions(ball4,box);
                        
                 }
                 velocityUpdate(ball4, DT); 

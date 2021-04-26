@@ -37,6 +37,8 @@ float static_absorb(Collider c);
 
 void velocityUpdate(Collider &c1, float DT);
 
+void velocity_cutoff(Collider &c1);
+
 inline float gravity = -30;
 
 

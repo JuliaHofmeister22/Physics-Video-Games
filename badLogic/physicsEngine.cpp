@@ -91,23 +91,23 @@ void collisions(Collider &c1, Collider &c2){
 	if(c1.isStatic){
 		std::cout<<c2.x;
 		float absorb = static_absorb(c1);
-		if(c1.x<c2.x && c2.y<c1.y){							
+		if(c1.x<c2.x+c2.radius && c2.y+c2.radius<c1.y){							
 			c2.y-=1;
 			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
 		}
-		else if(c1.x<c2.x && c2.y>c1.y && abs(c2.x-(c1.x+c1.radius))<1){							
+		else if(c1.x<c2.x+c2.radius && c2.y+c2.radius>c1.y && abs(c2.x-(c1.x+c1.radius))<1){							
 			c2.x+=2;
 			c2.velocity_y = c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = -c2.velocity_x * material_velocity_x(c2);
 			c2.acceleration_x = -c2.acceleration_x;
 		}
-		else if(c1.x<c2.x && c2.y>c1.y && c2.x<c1.x+c1.radius){							
+		else if(c1.x<c2.x+c2.radius && c2.y+c2.radius>c1.y && c2.x+c2.radius<c1.x+c1.radius){							
 			c2.y+=1;
 			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
 		}
-		else if(c1.x>c2.x && c2.y>c1.y){							
+		else if(c1.x>c2.x+c2.radius && c2.y+c2.radius>c1.y){							
 			c2.x-=1;
 			c2.velocity_y = c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = -c2.velocity_x * material_velocity_x(c2);
@@ -116,23 +116,64 @@ void collisions(Collider &c1, Collider &c2){
 		
 	}
 	else if(c2.isStatic){
+		std::cout<<c1.x;
 		float absorb = static_absorb(c2);
-		if(c2.x<c1.x && c1.y<c2.y){							
+		if(c2.x<c1.x+c1.radius && c1.y+c1.radius<c2.y){							
 			c1.y-=1;
 			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
-			c1.velocity_x = c1.velocity_x * material_velocity_y(c1);
+			c1.velocity_x = c1.velocity_x * material_velocity_x(c1);
 		}
+		else if(c2.x<c1.x+c1.radius && c1.y+c1.radius>c2.y && abs(c1.x-(c2.x+c2.radius))<1){							
+			c1.x+=2;
+			c1.velocity_y = c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x;
+		}
+		else if(c2.x<c1.x+c1.radius && c1.y+c1.radius>c2.y && c1.x+c1.radius<c2.x+c2.radius){							
+			c1.y+=1;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = c1.velocity_x * material_velocity_x(c1);
+		}
+		else if(c2.x>c1.x+c1.radius && c1.y+c1.radius>c2.y){							
+			c1.x-=1;
+			c1.velocity_y = c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x; //because we don't want it going back that way
+		}
+		
 	}
 	else if(c1.shape==0 && c2.shape==0){
-		if(c1.y<c2.y){
-			c1.y-=1;
-		}else{
-			c2.y-=1;
+		if (c1.velocity_y == 0.0 && c1.velocity_x == 0.0){
+			c1.velocity_y = c2.velocity_y*0.9;
+			c1.velocity_x = c2.velocity_x*0.9;
+			c1.acceleration_y = gravity;
+			c1.acceleration_x = c2.acceleration_x*0.9;
+			c2.velocity_y = 0.0;
+			c2.velocity_x = 0.0;
+			c2.acceleration_x = 0.0;
+			c2.acceleration_y = 0.0;
 		}
-		c1.velocity_y = -c1.velocity_y * 0.8;
-		c1.velocity_x = c1.velocity_x * 0.5;
-		c2.velocity_y = -c2.velocity_y * 0.8;
-		c2.velocity_x = c2.velocity_x * 0.5;
+		else if (c2.velocity_y == 0.0 && c2.velocity_x == 0.0){
+			c2.velocity_y = c1.velocity_y*0.9;
+			c2.velocity_x = c1.velocity_x*0.9;
+			c2.acceleration_y = gravity;
+			c2.acceleration_x = c1.acceleration_x*0.9;
+			c1.velocity_y = 0.0;
+			c1.velocity_x = 0.0;
+			c1.acceleration_x = 0.0;
+			c1.acceleration_y = 0.0;
+		}
+		else{
+			if(c1.y<c2.y){
+				c1.y-=1;
+			}else{
+				c2.y-=1;
+			}
+			c1.velocity_y = -c1.velocity_y * 0.8;
+			c1.velocity_x = c1.velocity_x * 0.5;
+			c2.velocity_y = -c2.velocity_y * 0.8;
+			c2.velocity_x = c2.velocity_x * 0.5;
+		}
 	}
 	
 }
@@ -140,8 +181,8 @@ void collisions(Collider &c1, Collider &c2){
 bool collision(Collider obj1,Collider obj2){
 	bool collision = false;
 	if (obj1.shape== 0 and obj2.shape == 0){
-		float dist = sqrt(pow(obj2.x - obj1.x,2) +
-				pow(obj2.y - obj1.y,2));
+		float dist = sqrt(pow((obj2.x+obj2.radius) - (obj1.x+obj1.radius),2) +
+				pow((obj2.y+obj2.radius) - (obj1.y+obj1.radius),2));
 		//std::cout << dist;
 		if (dist<=obj1.radius+obj2.radius){
 			collision = true;
@@ -189,6 +230,12 @@ void velocityUpdate(Collider &c1, float DT){
 	if(c1.velocity_y==0 && c1.acceleration_y==0){
 		c1.velocity_x*=0.95;
 	}
-	
-	//if(c1.velocity_y < 0.1 c1.velocity_x)
+}
+
+void velocity_cutoff(Collider &c1){
+	if(c1.velocity_y <10 && c1.velocity_y > -10){
+		c1.velocity_y = 0;
+		c1.acceleration_y =0;
+		c1.y-=0.5;
+	}
 }
