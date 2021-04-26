@@ -82,6 +82,30 @@ int main()
     ledge.isStatic=true;
     ledge.mass = 20.0;
     ledge.material = "sticky";
+
+    Collider ball4;
+    ball4.shape=0;
+    ball4.x=400.0;
+    ball4.y=200.0;
+    ball4.radius=20.0;
+    ball4.radius2=0.0; 
+    ball4.isStatic=false;
+    ball4.velocity_y = -0.1;
+    ball4.velocity_x = -100.0;
+    ball4.acceleration_y = 0.1;
+    ball4.acceleration_x = 5.0;
+    ball4.mass = 5.0;
+    ball4.material = "rubber";
+
+    Collider box;
+    box.shape=1;
+    box.x=150;
+    box.y=150;
+    box.radius=100;
+    box.radius2=100;
+    box.isStatic=true;
+    box.mass=50;
+    box.material="hard";
     
     RenderWindow window(VideoMode(400, 400), "Gravity Demo");
 
@@ -104,6 +128,11 @@ int main()
     player3.setRadius(ball3.radius);
     player3.setFillColor(gray);
 
+    CircleShape player4;
+    player4.setPosition(ball4.x, ball4.y);
+    player4.setRadius(ball4.radius);
+    player4.setFillColor(Color::Blue);
+
 
     RectangleShape ground_1;
     ground_1.setPosition(ground.x, ground.y);
@@ -115,6 +144,16 @@ int main()
     ledge_1.setSize(Vector2f(ledge.radius,ledge.radius2)); 
     ledge_1.setFillColor(orange);
 
+    RectangleShape box_1;
+    box_1.setPosition(box.x, box.y);
+    box_1.setSize(Vector2f(box.radius,box.radius2)); 
+    box_1.setFillColor(orange);
+
+    CircleShape point;
+    point.setPosition(ball4.x, ball4.y);
+    point.setRadius(1);
+    point.setFillColor(Color::Green);
+
 
 
     //Collider colliders[3] = {ball, ball2, ground};
@@ -124,6 +163,7 @@ int main()
  
     //std::cout<<clock.getElapsedTime().asSeconds();
     
+    int scene = 1;
 
     while (window.isOpen())
     {
@@ -134,67 +174,91 @@ int main()
                 window.close();
         }
         float DT=clock.getElapsedTime().asSeconds();
-        
-	if (collision(ball, ground)){
-                collisions(ball,ground);
-                //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
-                if(ball.velocity_y <15 && ball.velocity_y > -15){
-                        ball.velocity_y = 0;
-                        ball.acceleration_y =0;
-                        ball.y-=0.5;
-                        std::cout<<ball.velocity_x<<std::endl;
-                        //std::cout<<ball.y+ball.radius*2<<std::endl;
+        if(scene==0){
+                if (collision(ball, ground)){
+                        collisions(ball,ground);
+                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
+                        if(ball.velocity_y <15 && ball.velocity_y > -15){
+                                ball.velocity_y = 0;
+                                ball.acceleration_y =0;
+                                ball.y-=0.5;
+                                std::cout<<ball.velocity_x<<std::endl;
+                                //std::cout<<ball.y+ball.radius*2<<std::endl;
+                        }
                 }
-        }
-        if (collision(ball2, ground)){
-                collisions(ball2, ground);
-                if(ball2.velocity_y <10 && ball2.velocity_y > -10){
-                        ball2.velocity_y = 0;
-                        ball2.acceleration_y =0;
-                        ball2.y+=1;
-                        //std::cout<<ball2.velocity_y<<std::endl;
+                if (collision(ball2, ground)){
+                        collisions(ball2, ground);
+                        if(ball2.velocity_y <10 && ball2.velocity_y > -10){
+                                ball2.velocity_y = 0;
+                                ball2.acceleration_y =0;
+                                ball2.y+=1;
+                                //std::cout<<ball2.velocity_y<<std::endl;
+                        }
+                        //ball.velocity_x = ball.velocity_x * 0.3;
+                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
-                //ball.velocity_x = ball.velocity_x * 0.3;
-                //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
-        }
-        if (collision(ball3, ground)){
-                collisions(ball3, ground);
-                if(ball3.velocity_y <10 && ball3.velocity_y > -10){
-                        ball3.velocity_y = 0;
-                        ball3.acceleration_y =0;
-                        ball3.y+=1;
-                        //std::cout<<ball3.velocity_y<<std::endl;
+                if (collision(ball3, ground)){
+                        collisions(ball3, ground);
+                        if(ball3.velocity_y <10 && ball3.velocity_y > -10){
+                                ball3.velocity_y = 0;
+                                ball3.acceleration_y =0;
+                                ball3.y+=1;
+                                //std::cout<<ball3.velocity_y<<std::endl;
+                        }
+                        //ball.velocity_x = ball.velocity_x * 0.3;
+                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
-                //ball.velocity_x = ball.velocity_x * 0.3;
-                //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
-        }
-        if (collision(ball2, ledge)){
-                collisions(ball2, ledge);
-                if(ball2.velocity_y <10 && ball2.velocity_y > -10){
-                        ball2.velocity_y = 0;
-                        ball2.acceleration_y =0;
-                        ball2.y+=1;
+                if (collision(ball2, ledge)){
+                        collisions(ball2, ledge);
+                        if(ball2.velocity_y <10 && ball2.velocity_y > -10){
+                                ball2.velocity_y = 0;
+                                ball2.acceleration_y =0;
+                                ball2.y+=1;
+                        }
                 }
+                if(collision(ball2, ball)){
+                        collisions(ball2,ball);
+                        //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
+                }
+                velocityUpdate(ball, DT);
+                velocityUpdate(ball2, DT);
+                velocityUpdate(ball3, DT);
         }
-        if(collision(ball2, ball)){
-                collisions(ball2,ball);
-                //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
+        if(scene==1){
+                //std::cout<<ball4.x;
+                if(collision(box,ball4)){
+                        //std::cout<<"here ";
+                        collisions(box,ball4);
+                       
+                }
+                velocityUpdate(ball4, DT); 
         }
-        velocityUpdate(ball, DT);
-        velocityUpdate(ball2, DT);
-        velocityUpdate(ball3, DT);
+	
        
         clock.restart();
-	player.setPosition(ball.x, ball.y);
-        player2.setPosition(ball2.x,ball2.y);
-        player3.setPosition(ball3.x,ball3.y);
-	window.clear();
-        window.draw(player);
-        window.draw(player2);
-        window.draw(player3);
-	window.draw(ground_1);
-        window.draw(ledge_1);
-        window.display();
+
+        if(scene==0){
+                player.setPosition(ball.x, ball.y);
+                player2.setPosition(ball2.x,ball2.y);
+                player3.setPosition(ball3.x,ball3.y);
+                window.clear();
+                window.draw(player);
+                window.draw(player2);
+                window.draw(player3);
+                window.draw(ground_1);
+                window.draw(ledge_1);
+                window.display();
+        }
+        if(scene==1){
+                player4.setPosition(ball4.x,ball4.y);
+                point.setPosition(ball4.x+(ball4.radius), ball4.y+ball4.radius);
+                window.clear();
+                window.draw(player4);
+                window.draw(box_1);
+                window.draw(point);
+                window.display();
+        } 
+	
     }
 
     return 0;

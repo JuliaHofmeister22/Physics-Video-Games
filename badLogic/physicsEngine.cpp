@@ -89,12 +89,31 @@ float static_absorb(Collider c){
 
 void collisions(Collider &c1, Collider &c2){
 	if(c1.isStatic){
+		std::cout<<c2.x;
 		float absorb = static_absorb(c1);
 		if(c1.x<c2.x && c2.y<c1.y){							
 			c2.y-=1;
 			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
 		}
+		else if(c1.x<c2.x && c2.y>c1.y && abs(c2.x-(c1.x+c1.radius))<1){							
+			c2.x+=2;
+			c2.velocity_y = c2.velocity_y * material_velocity_y(c2)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c2);
+			c2.acceleration_x = -c2.acceleration_x;
+		}
+		else if(c1.x<c2.x && c2.y>c1.y && c2.x<c1.x+c1.radius){							
+			c2.y+=1;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
+			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
+		}
+		else if(c1.x>c2.x && c2.y>c1.y){							
+			c2.x-=1;
+			c2.velocity_y = c2.velocity_y * material_velocity_y(c2)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c2);
+			c2.acceleration_x = -c2.acceleration_x; //because we don't want it going back that way
+		}
+		
 	}
 	else if(c2.isStatic){
 		float absorb = static_absorb(c2);
@@ -136,23 +155,25 @@ bool collision(Collider obj1,Collider obj2){
                 }
         }
 	else if (obj1.shape == 1 and obj2.shape==0){
-				float px= mid(obj2.x, obj1.x,obj1.x+obj1.radius);
+				float px= mid(obj2.x+obj2.radius, obj1.x,obj1.x+obj1.radius);
 				float py= mid(obj2.y+obj2.radius, obj1.y,obj1.y+obj1.radius2);
-				float dist = sqrt(pow(obj2.x - px,2) +
+				float dist = sqrt(pow((obj2.x+obj2.radius) - px,2) +
 				pow((obj2.y+obj2.radius) - py,2));
+				/*std::cout<<px;
+				std::cout<<" ";*/
                 //float dist=(sqrt(pow(abs(obj2.x-px),2)),sqrt(pow(abs(obj2.y-py),2)));
-                if (dist<=obj2.radius and dist <= (obj2.radius)){
+				if (dist<=obj2.radius){
                         collision = true;
                 }
         }
 	else if (obj1.shape == 0 and obj2.shape==1){
-				float px= mid(obj1.x, obj2.x,obj2.x+obj2.radius);
+				float px= mid(obj1.x+obj1.radius, obj2.x,obj2.x+obj2.radius);
 				float py= mid(obj1.y+obj1.radius, obj2.y,obj2.y+obj2.radius2);
-				float dist = sqrt(pow(obj1.x-px,2) +
+				float dist = sqrt(pow((obj1.x+obj1.radius)-px,2) +
 				pow((obj1.y+obj1.radius)-py,2));
                 /*Vector2f dist(sqrt(pow(abs(obj1.x-px),2)),
                                         sqrt(pow(abs(obj1.y-py),2)));*/
-                if (dist<=obj1.radius and dist<= obj1.radius){
+                if (dist<=obj1.radius){
                         collision = true;
                 }
         }
@@ -161,9 +182,9 @@ bool collision(Collider obj1,Collider obj2){
 }
 
 void velocityUpdate(Collider &c1, float DT){
-	c1.velocity_y = c1.velocity_y+(c1.acceleration_y*DT);
+	c1.velocity_y = c1.velocity_y+(-c1.acceleration_y*DT);
 	c1.velocity_x = c1.velocity_x+(c1.acceleration_x*DT);
-	c1.y-=c1.velocity_y*(DT);
+	c1.y+=c1.velocity_y*(DT);
 	c1.x+=c1.velocity_x*(DT);
 	if(c1.velocity_y==0 && c1.acceleration_y==0){
 		c1.velocity_x*=0.95;
