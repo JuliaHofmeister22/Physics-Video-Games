@@ -8,6 +8,7 @@
 #include "physicsEngine.h"
 
 /*things to do still
+        fix corner collisions
         force transfer between objects
         check all collisions through a list
         buttons?
@@ -28,6 +29,7 @@ int main()
     ball.radius=20.0;
     ball.radius2=0.0; 
     ball.isStatic=false;
+    ball.tempStatic=false;
     ball.velocity_y = 1.0;
     ball.velocity_x = 0.5;
     ball.acceleration_y = gravity;
@@ -41,6 +43,7 @@ int main()
     ball2.y=100.0;
     ball2.radius=20.0;
     ball2.isStatic=false;
+    ball.tempStatic=false;
     ball2.velocity_y = 1.0;
     ball2.velocity_x = -1.0;
     ball2.acceleration_y = gravity;
@@ -54,6 +57,7 @@ int main()
     ball3.y=100.0;
     ball3.radius=10.0;
     ball3.isStatic=false;
+    ball.tempStatic=false;
     ball3.velocity_y = 1.0;
     ball3.velocity_x = -1.0;
     ball3.acceleration_y = gravity;
@@ -88,6 +92,7 @@ int main()
     ball4.radius=20.0;
     ball4.radius2=0.0; 
     ball4.isStatic=false;
+    ball.tempStatic=false;
     ball4.velocity_y = -0.1;
     ball4.velocity_x = -100.0;
     ball4.acceleration_y = gravity;
@@ -201,7 +206,8 @@ int main()
                 }
                 if(collision(ball, ball3)){
                         collisions(ball,ball3);
-                        velocity_cutoff(ball);
+                        std::cout<<"stuck";
+                        velocity_cutoff(ball3);
                         //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
                 }
                 velocityUpdate(ball, DT);

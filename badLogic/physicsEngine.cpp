@@ -5,6 +5,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cmath>
+#include <ctime>
 #include "physicsEngine.h"
 using namespace sf;
 
@@ -89,7 +90,6 @@ float static_absorb(Collider c){
 
 void collisions(Collider &c1, Collider &c2){
 	if(c1.isStatic){
-		std::cout<<c2.x;
 		float absorb = static_absorb(c1);
 		if(c1.x<c2.x+c2.radius && c2.y+c2.radius<c1.y){							
 			c2.y-=1;
@@ -116,7 +116,6 @@ void collisions(Collider &c1, Collider &c2){
 		
 	}
 	else if(c2.isStatic){
-		std::cout<<c1.x;
 		float absorb = static_absorb(c2);
 		if(c2.x<c1.x+c1.radius && c1.y+c1.radius<c2.y){							
 			c1.y-=1;
@@ -139,29 +138,36 @@ void collisions(Collider &c1, Collider &c2){
 			c1.velocity_y = c1.velocity_y * material_velocity_y(c1)*absorb;
 			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
 			c1.acceleration_x = -c1.acceleration_x; //because we don't want it going back that way
-		}
-		
+		}	
 	}
 	else if(c1.shape==0 && c2.shape==0){
 		if (c1.velocity_y == 0.0 && c1.velocity_x == 0.0){
 			c1.velocity_y = c2.velocity_y*0.9;
 			c1.velocity_x = c2.velocity_x*0.9;
-			c1.acceleration_y = gravity;
+			c1.acceleration_y = 0;
 			c1.acceleration_x = c2.acceleration_x*0.9;
+			c1.tempStatic=false;
+			c1.x+=5;
 			c2.velocity_y = 0.0;
 			c2.velocity_x = 0.0;
 			c2.acceleration_x = 0.0;
 			c2.acceleration_y = 0.0;
+			c1.tempStatic=true;
 		}
 		else if (c2.velocity_y == 0.0 && c2.velocity_x == 0.0){
-			c2.velocity_y = c1.velocity_y*0.9;
+			c2.velocity_y = -1;
 			c2.velocity_x = c1.velocity_x*0.9;
-			c2.acceleration_y = gravity;
+			c2.acceleration_y = -1;
 			c2.acceleration_x = c1.acceleration_x*0.9;
+			c2.tempStatic=false;
+			c2.x+=5;
 			c1.velocity_y = 0.0;
 			c1.velocity_x = 0.0;
 			c1.acceleration_x = 0.0;
 			c1.acceleration_y = 0.0;
+			c1.tempStatic=true;
+			
+			std::cout<<c2.acceleration_x<<std::endl;
 		}
 		else{
 			if(c1.y<c2.y){
@@ -174,8 +180,9 @@ void collisions(Collider &c1, Collider &c2){
 			c2.velocity_y = -c2.velocity_y * 0.8;
 			c2.velocity_x = c2.velocity_x * 0.5;
 		}
+		std::cout<<"yikes";
 	}
-	
+	std::cout<<"escaped";
 }
 
 bool collision(Collider obj1,Collider obj2){
@@ -232,10 +239,26 @@ void velocityUpdate(Collider &c1, float DT){
 	}
 }
 
+
 void velocity_cutoff(Collider &c1){
-	if(c1.velocity_y <10 && c1.velocity_y > -10){
-		c1.velocity_y = 0;
-		c1.acceleration_y =0;
-		c1.y-=0.5;
+	if (!c1.tempStatic){
+		if(c1.velocity_y <10 && c1.velocity_y > -10){
+			c1.tempStatic=true;
+			c1.velocity_y = 0;
+			c1.velocity_x = 0;
+			c1.acceleration_y =0;
+			c1.acceleration_x =0;
+			c1.y-=0.5;
+		}
+	}
+	else {
+		Clock clock;
+		std::cout<<"in clock";
+		while (clock.getElapsedTime().asSeconds()<0.5){
+			//std::cout<<clock.getElapsedTime().asSeconds()<<std::endl;
+			//std::cout<<"in while";
+			continue;
+		}
+		c1.tempStatic=false;
 	}
 }

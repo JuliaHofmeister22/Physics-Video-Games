@@ -3,6 +3,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string>
+#include <ctime>
 
 
 
@@ -15,6 +16,7 @@ struct Collider {
     float radius;
     float radius2;
     bool isStatic;
+    bool tempStatic;
     float velocity_y;
     float velocity_x;
     float acceleration_y;
