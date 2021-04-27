@@ -91,7 +91,7 @@ float static_absorb(Collider c){
 void collisions(Collider &c1, Collider &c2){
 	if(c1.isStatic){
 		float absorb = static_absorb(c1);
-		if(c1.x<c2.x+c2.radius && c2.y+c2.radius<c1.y){							
+		if(c1.x<c2.x+c2.radius && c2.y+c2.radius<c1.y && c1.x+c1.radius>c2.x+c2.radius){							
 			c2.y-=1;
 			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
@@ -107,17 +107,56 @@ void collisions(Collider &c1, Collider &c2){
 			c2.velocity_y = -c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = c2.velocity_x * material_velocity_x(c2);
 		}
-		else if(c1.x>c2.x+c2.radius && c2.y+c2.radius>c1.y){							
+		else if(c1.x>c2.x+c2.radius && c2.y+c2.radius>c1.y && (c1.y+c1.radius2)>(c2.y+c2.radius)){							
 			c2.x-=1;
 			c2.velocity_y = c2.velocity_y * material_velocity_y(c2)*absorb;
 			c2.velocity_x = -c2.velocity_x * material_velocity_x(c2);
 			c2.acceleration_x = -c2.acceleration_x; //because we don't want it going back that way
 		}
+		else if(c1.y>(c2.y+c2.radius) && (c1.radius+c1.x)<(c2.x+c2.radius)){
+			c2.y-=1;
+			c2.x+=1;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c1)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c1);
+			c2.acceleration_x = -c2.acceleration_x;
+		}
+		else if((c1.y+c1.radius2)<(c2.y+c2.radius) && (c1.x+c1.radius)<(c2.radius+c2.x)){
+			c2.y+=1;
+			c2.x+=1;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c1)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c1);
+			c2.acceleration_x = -c2.acceleration_x;
+		}
+		else if(c1.x>(c2.x+c2.radius)&& (c1.y+c1.radius2)<(c2.y+c2.radius)){
+			c2.y+=1;
+			c2.x-=1;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c1)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c1);
+			c2.acceleration_x = -c2.acceleration_x;
+		}
+		else if(c1.x>(c2.x+c2.radius) && c1.y>(c2.y+c2.radius)){
+			std::cout<<"herer";
+			//weird bug, it detects correctly, but it doesn't bounce like when box and ball4 are switched in the collisions call
+			c2.y-=1;
+			c2.x-=1;
+			c2.velocity_y = -c2.velocity_y * material_velocity_y(c1)*absorb;
+			c2.velocity_x = -c2.velocity_x * material_velocity_x(c1);
+			c2.acceleration_x = -c2.acceleration_x;
+		}
 		
 	}
 	else if(c2.isStatic){
+		std::cout<<c2.y;
+		std::cout<<" ";
+		std::cout<<c1.y+c1.radius;
+		std::cout<<" ";
+		std::cout<<c2.radius+c2.x;
+		std::cout<<" ";
+		std::cout<<c1.x+c1.radius;
+		std::cout<<"     ";
 		float absorb = static_absorb(c2);
-		if(c2.x<c1.x+c1.radius && c1.y+c1.radius<c2.y){							
+		if(c2.x<c1.x+c1.radius && c1.y+c1.radius<c2.y && c2.x+c2.radius>c1.x+c1.radius){	
+			std::cout<<"HERE";						
 			c1.y-=1;
 			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
 			c1.velocity_x = c1.velocity_x * material_velocity_x(c1);
@@ -133,12 +172,40 @@ void collisions(Collider &c1, Collider &c2){
 			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
 			c1.velocity_x = c1.velocity_x * material_velocity_x(c1);
 		}
-		else if(c2.x>c1.x+c1.radius && c1.y+c1.radius>c2.y){							
+		else if(c2.x>c1.x+c1.radius && c1.y+c1.radius>c2.y && (c2.y+c2.radius2)>(c1.y+c1.radius)){					
 			c1.x-=1;
 			c1.velocity_y = c1.velocity_y * material_velocity_y(c1)*absorb;
 			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
 			c1.acceleration_x = -c1.acceleration_x; //because we don't want it going back that way
-		}	
+		}
+		else if(c2.y>(c1.y+c1.radius) && (c2.radius+c2.x)<(c1.x+c1.radius)){
+			c1.y-=1;
+			c1.x+=1;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x;
+		}
+		else if((c2.y+c2.radius2)<(c1.y+c1.radius) && (c2.x+c2.radius)<(c1.radius+c1.x)){
+			c1.y+=1;
+			c1.x+=1;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x;
+		}
+		else if(c2.x>(c1.x+c1.radius)&& (c2.y+c2.radius2)<(c1.y+c1.radius)){
+			c1.y+=1;
+			c1.x-=1;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x;
+		}
+		else if(c2.x>(c1.x+c1.radius) && c2.y>(c1.y+c1.radius)){
+			c1.y-=1;
+			c1.x-=1;
+			c1.velocity_y = -c1.velocity_y * material_velocity_y(c1)*absorb;
+			c1.velocity_x = -c1.velocity_x * material_velocity_x(c1);
+			c1.acceleration_x = -c1.acceleration_x;
+		}
 	}
 	else if(c1.shape==0 && c2.shape==0){
 		if (c1.velocity_y == 0.0 && c1.velocity_x == 0.0){
@@ -182,7 +249,7 @@ void collisions(Collider &c1, Collider &c2){
 		}
 		std::cout<<"yikes";
 	}
-	std::cout<<"escaped";
+	//std::cout<<"escaped";
 }
 
 bool collision(Collider obj1,Collider obj2){

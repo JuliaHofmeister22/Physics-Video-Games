@@ -87,14 +87,14 @@ int main()
 
     Collider ball4;
     ball4.shape=0;
-    ball4.x=400.0;
-    ball4.y=80.0;
+    ball4.x=0.0;
+    ball4.y=0.0;
     ball4.radius=20.0;
     ball4.radius2=0.0; 
     ball4.isStatic=false;
     ball.tempStatic=false;
-    ball4.velocity_y = -0.1;
-    ball4.velocity_x = -100.0;
+    ball4.velocity_y = 40.0;
+    ball4.velocity_x = 60.0;
     ball4.acceleration_y = gravity;
     ball4.acceleration_x = 5.0;
     ball4.mass = 5.0;
