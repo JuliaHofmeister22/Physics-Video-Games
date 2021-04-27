@@ -166,7 +166,7 @@ int main()
  
     //std::cout<<clock.getElapsedTime().asSeconds();
     
-    int scene = 0;
+    int scene = 1;
 
     while (window.isOpen())
     {
