@@ -17,25 +17,26 @@ struct Collider {
     float radius2;
     bool isStatic;
     bool tempStatic;
-    float velocity_y;
-    float velocity_x;
+    float velocity_y = 0;
+    float velocity_x = 0;
     float acceleration_y;
     float acceleration_x;
     float mass;
     std::string material;
 };
-
-bool collision(Collider obj1,Collider obj2);
+void do_collisions(std::queue<Collider> colliders, int size);
 
 float mid(float a, float b, float c);
-
-void collisions(Collider &c1, Collider &c2);
 
 float material_velocity_y(Collider c);
 
 float material_velocity_x(Collider c);
 
 float static_absorb(Collider c);
+
+void collisions(Collider &c1, Collider &c2);
+
+bool collision(Collider obj1,Collider obj2);
 
 void velocityUpdate(Collider &c1, float DT);
 

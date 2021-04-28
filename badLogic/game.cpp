@@ -5,6 +5,7 @@
 #include <ctime>
 #include <string>
 #include <iostream>
+#include <queue>
 #include "physicsEngine.h"
 
 /*things to do still
@@ -24,7 +25,7 @@ int main()
 
     Collider ball;
     ball.shape=0;
-    ball.x=50.0;
+    ball.x=120.0;
     ball.y=100.0;
     ball.radius=20.0;
     ball.radius2=0.0; 
@@ -47,14 +48,14 @@ int main()
     ball2.velocity_y = 1.0;
     ball2.velocity_x = -1.0;
     ball2.acceleration_y = gravity;
-    ball2.acceleration_x = -1.0;
+    ball2.acceleration_x = -5.0;
     ball2.mass = 6.0;
     ball2.material = "plastic";
 
     Collider ball3;
     ball3.shape=0;
-    ball3.x=300.0;
-    ball3.y=100.0;
+    ball3.x=100.0;
+    ball3.y=150.0;
     ball3.radius=10.0;
     ball3.isStatic=false;
     ball.tempStatic=false;
@@ -63,7 +64,7 @@ int main()
     ball3.acceleration_y = gravity;
     ball3.acceleration_x = -1.0;
     ball3.mass = 6.0;
-    ball3.material = "metal";
+    ball3.material = "plastic";
 
     Collider ground;
     ground.shape=1;
@@ -157,16 +158,10 @@ int main()
     point.setRadius(1);
     point.setFillColor(Color::Green);
 
-
-
-    //Collider colliders[3] = {ball, ball2, ground};
-    /*colliders.push(ball);
-    colliders.push(ball2);
-    colliders.push(ground);*/
- 
-    //std::cout<<clock.getElapsedTime().asSeconds();
+    Collider colliders[5] = {ball, ball2, ball3, ledge, ground};
     
-    int scene = 1;
+
+    int scene = 0;
 
     while (window.isOpen())
     {
@@ -178,22 +173,42 @@ int main()
         }
         float DT=clock.getElapsedTime().asSeconds();
         if(scene==0){
-                if (collision(ball, ground)){
+                std::queue<Collider> have_collided;
+                for (int i=0; i<4; i++){
+                    for (int j=1; j<4;j++){
+                        for (int k=2; k<4; k++){
+                            for (int l=3; l<4; l++){
+                                if (collision(colliders[l], colliders[l+1])){
+                                        Collider pair[] = {colliders[l], colliders[l+1]};
+                                        have_collided.push(pair);
+                                }
+                            }
+                            if (collision(colliders[k], colliders[k+1])){
+                                have_collided.push({colliders[k], colliders[k+1]});
+                            }
+                        }
+                        if (collision(colliders[j], colliders[j+1])){
+                            have_collided.push({colliders[j], colliders[j+1]});
+                        }
+                    }
+                    if (collision(colliders[i], colliders[i+1])){
+                        have_collided.push({colliders[i], colliders[i+1]});
+                    }
+                }
+
+                do_collisions(have_collided, have_collided.size());
+
+                /*if (collision(ball, ground)){
                         collisions(ball,ground);
                         velocity_cutoff(ball);
-                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
                 if (collision(ball2, ground)){
                         collisions(ball2, ground);
                         velocity_cutoff(ball2);
-                        //ball.velocity_x = ball.velocity_x * 0.3;
-                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
                 if (collision(ball3, ground)){
                         collisions(ball3, ground);
                         velocity_cutoff(ball3);
-                        //ball.velocity_x = ball.velocity_x * 0.3;
-                        //ball.velocity = ((ball.mass-ground.mass)/(ball.mass+ground.mass))*ball.velocity;
                 }
                 if (collision(ball2, ledge)){
                         collisions(ball2, ledge);
@@ -202,22 +217,20 @@ int main()
                 if(collision(ball2, ball)){
                         collisions(ball2,ball);
                         velocity_cutoff(ball2);
-                        //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
+                        velocity_cutoff(ball);
+                           
                 }
                 if(collision(ball, ball3)){
                         collisions(ball,ball3);
-                        std::cout<<"stuck";
                         velocity_cutoff(ball3);
-                        //ball2.velocity= ((ball2.mass-ball.mass)/(ball2.mass+ball.mass))*ball2.velocity + (2*ball2.mass/(ball2.mass+ball.mass))*ball.velocity;     
-                }
+                        velocity_cutoff(ball);
+                }*/
                 velocityUpdate(ball, DT);
                 velocityUpdate(ball2, DT);
                 velocityUpdate(ball3, DT);
         }
         if(scene==1){
-                //std::cout<<ball4.x;
                 if(collision(ball4,box)){
-                        //std::cout<<"here ";
                         collisions(ball4,box);
                        
                 }
