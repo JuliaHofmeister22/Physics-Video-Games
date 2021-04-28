@@ -25,7 +25,7 @@ int main()
 
     Collider ball;
     ball.shape=0;
-    ball.x=120.0;
+    ball.x=90.0;
     ball.y=100.0;
     ball.radius=20.0;
     ball.radius2=0.0; 
@@ -34,7 +34,7 @@ int main()
     ball.velocity_y = 1.0;
     ball.velocity_x = 0.5;
     ball.acceleration_y = gravity;
-    ball.acceleration_x = 5.0;
+    ball.acceleration_x = 3.0;
     ball.mass = 5.0;
     ball.material = "rubber";
 
@@ -158,7 +158,7 @@ int main()
     point.setRadius(1);
     point.setFillColor(Color::Green);
 
-    Collider colliders[5] = {ball, ball2, ball3, ledge, ground};
+    Collider* colliders[] = {&ball, &ball2, &ball3, &ledge, &ground};
     
 
     int scene = 0;
@@ -173,30 +173,9 @@ int main()
         }
         float DT=clock.getElapsedTime().asSeconds();
         if(scene==0){
-                std::queue<Collider> have_collided;
-                for (int i=0; i<4; i++){
-                    for (int j=1; j<4;j++){
-                        for (int k=2; k<4; k++){
-                            for (int l=3; l<4; l++){
-                                if (collision(colliders[l], colliders[l+1])){
-                                        Collider pair[] = {colliders[l], colliders[l+1]};
-                                        have_collided.push(pair);
-                                }
-                            }
-                            if (collision(colliders[k], colliders[k+1])){
-                                have_collided.push({colliders[k], colliders[k+1]});
-                            }
-                        }
-                        if (collision(colliders[j], colliders[j+1])){
-                            have_collided.push({colliders[j], colliders[j+1]});
-                        }
-                    }
-                    if (collision(colliders[i], colliders[i+1])){
-                        have_collided.push({colliders[i], colliders[i+1]});
-                    }
-                }
-
-                do_collisions(have_collided, have_collided.size());
+            
+        
+                do_collisions(colliders, 5);
 
                 /*if (collision(ball, ground)){
                         collisions(ball,ground);
@@ -225,16 +204,16 @@ int main()
                         velocity_cutoff(ball3);
                         velocity_cutoff(ball);
                 }*/
-                velocityUpdate(ball, DT);
-                velocityUpdate(ball2, DT);
-                velocityUpdate(ball3, DT);
+                velocityUpdate(&ball, DT);
+                velocityUpdate(&ball2, DT);
+                velocityUpdate(&ball3, DT);
         }
         if(scene==1){
-                if(collision(ball4,box)){
-                        collisions(ball4,box);
+                if(collision(&ball4,&box)){
+                        collisions(&ball4,&box);
                        
                 }
-                velocityUpdate(ball4, DT); 
+                velocityUpdate(&ball4, DT); 
         }
 	
        

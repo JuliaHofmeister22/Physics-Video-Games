@@ -24,23 +24,23 @@ struct Collider {
     float mass;
     std::string material;
 };
-void do_collisions(std::queue<Collider> colliders, int size);
+void do_collisions(Collider *colliders[], int size);
 
 float mid(float a, float b, float c);
 
-float material_velocity_y(Collider c);
+float material_velocity_y(Collider *c);
 
-float material_velocity_x(Collider c);
+float material_velocity_x(Collider *c);
 
-float static_absorb(Collider c);
+float static_absorb(Collider *c);
 
-void collisions(Collider &c1, Collider &c2);
+void collisions(Collider *c1, Collider *c2);
 
-bool collision(Collider obj1,Collider obj2);
+bool collision(Collider *obj1,Collider *obj2);
 
-void velocityUpdate(Collider &c1, float DT);
+void velocityUpdate(Collider *c1, float DT);
 
-void velocity_cutoff(Collider &c1);
+void velocity_cutoff(Collider *c1);
 
 inline float gravity = -30;
 
