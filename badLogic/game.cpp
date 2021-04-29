@@ -34,10 +34,10 @@ int main()
     ball.radius2=0.0; 
     ball.isStatic=false;
     ball.tempStatic=false;
-    ball.velocity_y = 1.0;
+    ball.velocity_y = -10.0;
     ball.velocity_x = 1.0;
-    ball.acceleration_y = gravity;
-    ball.acceleration_x = 50.0;
+    ball.acceleration_y = 0;
+    ball.acceleration_x = 0.0;
     ball.mass = 5.0;
     ball.material = "rubber";
 
@@ -46,7 +46,7 @@ int main()
     wall1.x=200.0;
     wall1.y=289.0;
     wall1.radius=20.0;
-    wall1.radius2=40.0;
+    wall1.radius2=20.0;
     wall1.isStatic=false;
     wall1.tempStatic=false;
     wall1.velocity_y = 0.0;
@@ -61,7 +61,7 @@ int main()
     wall2.x=200.0;
     wall2.y=331.0;
     wall2.radius=20.0;
-    wall2.radius2=40.0;
+    wall2.radius2=20.0;
     wall2.isStatic=false;
     wall2.tempStatic=false;
     wall2.velocity_y = 0.0;
@@ -76,7 +76,7 @@ int main()
     wall3.x=241.0;
     wall3.y=289.0;
     wall3.radius=20.0;
-    wall3.radius2=40.0;
+    wall3.radius2=20.0;
     wall3.isStatic=false;
     wall3.tempStatic=false;
     wall3.velocity_y = 0.0;
@@ -172,17 +172,17 @@ int main()
 
     RectangleShape barrier1;
     barrier1.setPosition(wall1.x, wall1.y);
-    barrier1.setSize(Vector2f(wall1.radius,wall1.radius2)); 
+    barrier1.setSize(Vector2f(wall1.radius*2,wall1.radius2*2)); 
     barrier1.setFillColor(Color::Red);
 
     RectangleShape barrier2;
     barrier2.setPosition(wall2.x, wall2.y);
-    barrier2.setSize(Vector2f(wall2.radius,wall2.radius2)); 
+    barrier2.setSize(Vector2f(wall2.radius*2,wall2.radius2*2)); 
     barrier2.setFillColor(Color::Red);
 
     RectangleShape barrier3;
     barrier3.setPosition(wall3.x, wall3.y);
-    barrier3.setSize(Vector2f(wall3.radius,wall3.radius2)); 
+    barrier3.setSize(Vector2f(wall3.radius*2,wall3.radius2*2)); 
     barrier3.setFillColor(Color::Red);
 
 
@@ -219,6 +219,19 @@ int main()
         }
         float DT=clock.getElapsedTime().asSeconds();
         if(scene==0){
+
+                if(Keyboard::isKeyPressed(Keyboard::Space)){
+                    ball.acceleration_y = gravity;
+                    ball.acceleration_x = 50.0;
+                }
+                
+                //slingshot rotation
+                if(ball.y < 200 && ball.x <=50){
+                        ball.velocity_y = 10;
+                }
+                else if(ball.y > 275 && ball.x <=50){
+                        ball.velocity_y = -10;
+                }
             
         
                 do_collisions(colliders, 6, hit);
@@ -229,7 +242,7 @@ int main()
                 velocityUpdate(&wall2, DT);
                 velocityUpdate(&wall3, DT);
 
-                if(hit > 2100){
+                if(hit > 100){
                         scene=1;
                 }
                 
