@@ -16,6 +16,8 @@ Collider Structure - has variable options to pair a graphical shape with a colli
 - mass = how much gravity effects the collider
 - material = how much force the collider gives off
 
+do_collisions(Collider *colliders[], int size) - pass an array of colliders and it's size, runs all collidiables against eachother
+
 Collision - true or false statement on if the collider has collided with something
 
 Collisions - applies force to the colliding objects
