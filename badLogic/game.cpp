@@ -24,19 +24,23 @@ int main()
 {   
     Clock clock;
 
+    int window_width = 800;
+
+    int window_height = 800;
+
     
 
     Collider ball;
     ball.shape=0;
     ball.x=40.0;
-    ball.y=250.0;
+    ball.y=600.0;
     ball.radius=20.0;
     ball.radius2=0.0; 
     ball.isStatic=false;
     ball.tempStatic=false;
     ball.velocity_y = -10.0;
     ball.velocity_x = 1.0;
-    ball.acceleration_y = 0;
+    ball.acceleration_y = 0.0;
     ball.acceleration_x = 0.0;
     ball.mass = 5.0;
     ball.material = "rubber";
@@ -105,12 +109,22 @@ int main()
     Collider ground;
     ground.shape=1;
     ground.x=0.0;
-    ground.y=370.0;
-    ground.radius=400.0;
+    ground.y=window_height-30;
+    ground.radius=window_width;
     ground.radius2=30.0;
     ground.isStatic=true;
     ground.mass = 50.0;
     ground.material = "hard";
+
+    Collider wall_ground;
+    wall_ground.shape=1;
+    wall_ground.x=window_width-30;
+    wall_ground.y=0;
+    wall_ground.radius=30.0;
+    wall_ground.radius2=window_height;
+    wall_ground.isStatic=true;
+    wall_ground.mass = 50.0;
+    wall_ground.material = "hard";
 
     Collider ball4;
     ball4.shape=0;
@@ -136,8 +150,10 @@ int main()
     box.isStatic=true;
     box.mass=50;
     box.material="hard";
+
     
-    RenderWindow window(VideoMode(400, 400), "Geometry Crash");
+    
+    RenderWindow window(VideoMode(window_width, window_height), "Geometry Crash");
 
     Font font;
     if(!font.loadFromFile(resources() + "ubuntu.ttf")){
@@ -146,14 +162,23 @@ int main()
 
     font.loadFromFile(resources() + "ubuntu.ttf");
 
-    Text menuText;
+    Text finished_text;
 
-    menuText.setFont(font);
-    menuText.setCharacterSize(40);
-    menuText.setPosition(100.f, 200.f);
-    menuText.setFillColor(Color::White);
+    finished_text.setFont(font);
+    finished_text.setCharacterSize(40);
+    finished_text.setPosition(window_width/2-100, window_height/2-100);
+    finished_text.setFillColor(Color::White);
 
-    menuText.setString("Winner!");
+    finished_text.setString("Winner!");
+
+    Text menu_text;
+
+    menu_text.setFont(font);
+    menu_text.setCharacterSize(40);
+    menu_text.setPosition(window_width-550, (window_height/2)-100);
+    menu_text.setFillColor(Color::White);
+
+    menu_text.setString("Geometry Crash\nPress Enter to Start!");
     
 
     //Colors: gray=metal; green=rubber; red=plastic; orange=sticky
@@ -191,6 +216,11 @@ int main()
     ground_1.setSize(Vector2f(ground.radius,ground.radius2)); 
     ground_1.setFillColor(gray);
 
+    RectangleShape ground_2;
+    ground_2.setPosition(wall_ground.x, wall_ground.y);
+    ground_2.setSize(Vector2f(wall_ground.radius,wall_ground.radius2)); 
+    ground_2.setFillColor(gray);
+
     
     RectangleShape box_1;
     box_1.setPosition(box.x, box.y);
@@ -202,12 +232,16 @@ int main()
     point.setRadius(1);
     point.setFillColor(Color::Green);
 
-    Collider* colliders[] = {&ball, &ball2, &wall1, &wall2, &wall3, &ground};
+    Collider* colliders[] = {&ball, &ball2, &wall1, &wall2, &wall3, &ground, &wall_ground};
     
 
-    int scene = 0;
+    int scene = 2;
 
     int hit = 0;
+
+    int player_hit = 0;
+
+    int player_lives = 2;
 
     while (window.isOpen())
     {
@@ -217,7 +251,7 @@ int main()
             if (event.type == Event::Closed)
                 window.close();
         }
-        float DT=clock.getElapsedTime().asSeconds();
+        float DT=clock.getElapsedTime().asSeconds()*4;
         if(scene==0){
 
                 if(Keyboard::isKeyPressed(Keyboard::Space)){
@@ -226,15 +260,38 @@ int main()
                 }
                 
                 //slingshot rotation
-                if(ball.y < 200 && ball.x <=50){
+                if(ball.y < 550 && ball.x <=50){
                         ball.velocity_y = 10;
                 }
-                else if(ball.y > 275 && ball.x <=50){
+                else if(ball.y > 650 && ball.x <=50){
                         ball.velocity_y = -10;
                 }
-            
+
+                if(ball.tempStatic == 1 || ball.x <0){
+                        player_hit+=1;
+                }
+
+                if(player_hit >2000){
+                    player_lives-=1;
+                    player_hit=0;
+                    ball.x=40.0;
+                    ball.y=600.0;
+                    ball.radius=20.0;
+                    ball.radius2=0.0; 
+                    ball.isStatic=false;
+                    ball.tempStatic=false;
+                    ball.velocity_y = -10.0;
+                    ball.velocity_x = 1.0;
+                    ball.acceleration_y = 0.0;
+                    ball.acceleration_x = 0.0;
+                }
+
+                if(player_lives < 1){
+                    finished_text.setString("Loser!\n Press Enter to restart");
+                    scene=1;
+                }
         
-                do_collisions(colliders, 6, hit);
+                do_collisions(colliders, 7, hit);
 
                 velocityUpdate(&ball, DT);
                 velocityUpdate(&ball2, DT);
@@ -242,16 +299,28 @@ int main()
                 velocityUpdate(&wall2, DT);
                 velocityUpdate(&wall3, DT);
 
-                if(hit > 100){
+                if(hit > 1000){
                         scene=1;
                 }
                 
         }
         if(scene==1){
+                player_lives = 1;
+                if(Keyboard::isKeyPressed(Keyboard::Enter)){
+                        scene=0;
+                }
+        }
+
+        if(scene==2){
+                if(Keyboard::isKeyPressed(Keyboard::Enter)){
+                        scene=0;
+                }
         }
 	
        
         clock.restart();
+
+        
 
         if(scene==0){
                 player.setPosition(ball.x, ball.y);
@@ -267,11 +336,18 @@ int main()
                 window.draw(barrier2);
                 window.draw(barrier3);
                 window.draw(ground_1);
+                window.draw(ground_2);
                 window.display();
         }
         if(scene==1){
                 window.clear();
-                window.draw(menuText);
+                window.draw(finished_text);
+                window.display();
+        } 
+
+        if(scene==2){
+                window.clear();
+                window.draw(menu_text);
                 window.display();
         } 
 	
