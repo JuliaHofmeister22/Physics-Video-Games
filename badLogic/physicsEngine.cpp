@@ -18,6 +18,7 @@ void do_collisions(Collider *colliders[], int size){
 			if (collision(colliders[i], colliders[j])){
 				//std::cout<<colliders[i]<<std::endl;
 				//std::cout<<colliders[j]<<std::endl;
+				//std::cout<<"Here"<<std::endl;
 				collisions(colliders[i], colliders[j]);
 				velocity_cutoff(colliders[i]);
 				velocity_cutoff(colliders[j]);
@@ -94,6 +95,7 @@ float static_absorb(Collider *c){
 }
 
 void collisions(Collider *c1, Collider *c2){
+	
 	if(c1->isStatic){
 		float absorb = static_absorb(c1);
 		if(c1->x<c2->x+c2->radius && c2->y+c2->radius<c1->y && c1->x+c1->radius>c2->x+c2->radius){
@@ -102,6 +104,12 @@ void collisions(Collider *c1, Collider *c2){
 			}							
 			c2->velocity_y = -c2->velocity_y * material_velocity_y(c2)*absorb;
 			c2->velocity_x = c2->velocity_x * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if(c1->x<c2->x+c2->radius && c2->y+c2->radius>c1->y && abs(c2->x-(c1->x+c1->radius))<1){							
 			if(!c2->tempStatic){
@@ -109,7 +117,13 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c2->velocity_y = c2->velocity_y * material_velocity_y(c2)*absorb;
 			c2->velocity_x = -c2->velocity_x * material_velocity_x(c2)*absorb;
-			c2->acceleration_x = -c2->acceleration_x;
+			c2->acceleration_x = -c2->acceleration_x * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if(c1->x<c2->x+c2->radius && c2->y+c2->radius>c1->y && c2->x+c2->radius<c1->x+c1->radius){							
 			if(!c2->tempStatic){
@@ -117,6 +131,12 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c2->velocity_y = -c2->velocity_y * material_velocity_y(c2)*absorb;
 			c2->velocity_x = c2->velocity_x * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if(c1->x>c2->x+c2->radius && c2->y+c2->radius>c1->y && (c1->y+c1->radius2)>(c2->y+c2->radius)){							
 			if(!c2->tempStatic){
@@ -124,45 +144,77 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c2->velocity_y = c2->velocity_y * material_velocity_y(c2)*absorb;
 			c2->velocity_x = -c2->velocity_x * material_velocity_x(c2)*absorb;
-			c2->acceleration_x = -c2->acceleration_x; //because we don't want it going back that way
+			c2->acceleration_x = -c2->acceleration_x * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
+			 //because we don't want it going back that way
 		}
+		//corner cases
 		else if(c1->y>(c2->y+c2->radius) && (c1->radius+c1->x)<(c2->x+c2->radius)){
 			if(!c2->tempStatic){
 				c2->y-=1;
 				c2->x+=1;
 			}
-			c2->velocity_y = -c2->velocity_y * material_velocity_y(c1)*absorb;
-			c2->velocity_x = -c2->velocity_x * material_velocity_x(c1)*absorb;
-			c2->acceleration_x = -c2->acceleration_x;
+			c2->velocity_y = -abs(c2->velocity_y) * material_velocity_y(c1)*absorb;
+			c2->velocity_x = abs(c2->velocity_x) * material_velocity_x(c1)*absorb;
+			c2->acceleration_x = abs(c2->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if((c1->y+c1->radius2)<(c2->y+c2->radius) && (c1->x+c1->radius)<(c2->radius+c2->x)){
 			if(!c2->tempStatic){
 				c2->y+=1;
 				c2->x+=1;
 			}
-			c2->velocity_y = -c2->velocity_y * material_velocity_y(c1)*absorb;
-			c2->velocity_x = -c2->velocity_x * material_velocity_x(c1)*absorb;
-			c2->acceleration_x = -c2->acceleration_x;
+			c2->velocity_y = abs(c2->velocity_y) * material_velocity_y(c1)*absorb;
+			c2->velocity_x = abs(c2->velocity_x) * material_velocity_x(c1)*absorb;
+			c2->acceleration_x = abs(c2->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if(c1->x>(c2->x+c2->radius)&& (c1->y+c1->radius2)<(c2->y+c2->radius)){
 			if(!c2->tempStatic){
 				c2->y+=1;
 				c2->x-=1;
 			}
-			c2->velocity_y = -c2->velocity_y * material_velocity_y(c1)*absorb;
-			c2->velocity_x = -c2->velocity_x * material_velocity_x(c1)*absorb;
-			c2->acceleration_x = -c2->acceleration_x;
+			c2->velocity_y = abs(c2->velocity_y) * material_velocity_y(c1)*absorb;
+			c2->velocity_x = -abs(c2->velocity_x) * material_velocity_x(c1)*absorb;
+			c2->acceleration_x = -abs(c2->acceleration_x) * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		else if(c1->x>(c2->x+c2->radius) && c1->y>(c2->y+c2->radius)){
-			std::cout<<"herer";
+			//std::cout<<"herer";
 			//weird bug, it detects correctly, but it doesn't bounce like when box and ball4 are switched in the collisions call
 			if(!c2->tempStatic){
 				c2->y-=1;
 				c2->x-=1;
 			}
-			c2->velocity_y = -c2->velocity_y * material_velocity_y(c1)*absorb;
-			c2->velocity_x = -c2->velocity_x * material_velocity_x(c1)*absorb;
-			c2->acceleration_x = -c2->acceleration_x;
+			c2->velocity_y = -abs(c2->velocity_y) * material_velocity_y(c1)*absorb;
+			c2->velocity_x = -abs(c2->velocity_x) * material_velocity_x(c1)*absorb;
+			c2->acceleration_x = -abs(c2->acceleration_x) * material_velocity_x(c2)*absorb;
+			if(c1->material == "web"){
+				c2->velocity_y=0;
+				c2->velocity_x=0;
+				c2->acceleration_x=0;
+				c2->acceleration_y=0;
+			}
 		}
 		
 	}
@@ -175,6 +227,12 @@ void collisions(Collider *c1, Collider *c2){
 			}						
 			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
 			c1->velocity_x = c1->velocity_x * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if(c2->x<c1->x+c1->radius && c1->y+c1->radius>c2->y && abs(c1->x-(c2->x+c2->radius))<1){							
 			if(!c1->tempStatic){
@@ -182,7 +240,13 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c1->velocity_y = c1->velocity_y * material_velocity_y(c1)*absorb;
 			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x;
+			c1->acceleration_x = -c1->acceleration_x * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if(c2->x<c1->x+c1->radius && c1->y+c1->radius>c2->y && c1->x+c1->radius<c2->x+c2->radius){							
 			if(!c1->tempStatic){
@@ -190,6 +254,12 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
 			c1->velocity_x = c1->velocity_x * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if(c2->x>c1->x+c1->radius && c1->y+c1->radius>c2->y && (c2->y+c2->radius2)>(c1->y+c1->radius)){					
 			if(!c1->tempStatic){
@@ -197,79 +267,193 @@ void collisions(Collider *c1, Collider *c2){
 			}
 			c1->velocity_y = c1->velocity_y * material_velocity_y(c1)*absorb;
 			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x; //because we don't want it going back that way
+			c1->acceleration_x = -c1->acceleration_x * material_velocity_x(c1)*absorb; //because we don't want it going back that way
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
+
 		else if(c2->y>(c1->y+c1->radius) && (c2->radius+c2->x)<(c1->x+c1->radius)){
 			if(!c1->tempStatic){
 				c1->y-=1;
 				c1->x+=1;
 			}
-			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
-			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x;
+			c1->velocity_y = -abs(c1->velocity_y) * material_velocity_y(c1)*absorb;
+			c1->velocity_x = abs(c1->velocity_x) * material_velocity_x(c1)*absorb;
+			c1->acceleration_x = abs(c1->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if((c2->y+c2->radius2)<(c1->y+c1->radius) && (c2->x+c2->radius)<(c1->radius+c1->x)){
 			if(!c1->tempStatic){
 				c1->y+=1;
 				c1->x+=1;
 			}
-			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
-			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x;
+			c1->velocity_y = abs(c1->velocity_y) * material_velocity_y(c1)*absorb;
+			c1->velocity_x = abs(c1->velocity_x) * material_velocity_x(c1)*absorb;
+			c1->acceleration_x = abs(c1->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if(c2->x>(c1->x+c1->radius)&& (c2->y+c2->radius2)<(c1->y+c1->radius)){
 			if(!c1->tempStatic){
 				c1->y+=1;
 				c1->x-=1;
 			}
-			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
-			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x;
+			c1->velocity_y = abs(c1->velocity_y) * material_velocity_y(c1)*absorb;
+			c1->velocity_x = -abs(c1->velocity_x) * material_velocity_x(c1)*absorb;
+			c1->acceleration_x = -abs(c1->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 		else if(c2->x>(c1->x+c1->radius) && c2->y>(c1->y+c1->radius)){
 			if(!c1->tempStatic){
 				c1->y-=1;
 				c1->x-=1;
 			}
-			c1->velocity_y = -c1->velocity_y * material_velocity_y(c1)*absorb;
-			c1->velocity_x = -c1->velocity_x * material_velocity_x(c1)*absorb;
-			c1->acceleration_x = -c1->acceleration_x;
+			c1->velocity_y = -abs(c1->velocity_y) * material_velocity_y(c1)*absorb;
+			c1->velocity_x = -abs(c1->velocity_x) * material_velocity_x(c1)*absorb;
+			c1->acceleration_x = -abs(c1->acceleration_x) * material_velocity_x(c1)*absorb;
+			if(c1->acceleration_x>0){
+				std::cout<<"Here"<<std::endl;
+				
+			}
+			if(c2->material == "web"){
+				c1->velocity_y=0;
+				c1->velocity_x=0;
+				c1->acceleration_x=0;
+				c1->acceleration_y=0;
+			}
 		}
 	}
 	else if(c1->shape==0 && c2->shape==0){
-		if (c1->velocity_y == 0.0 && c1->velocity_x == 0.0){
-			std::cout<<c2->velocity_x<<std::endl;
+		if (c1->tempStatic){
+			//std::cout<<"here2"<<std::endl;
 			c1->velocity_y = c2->velocity_y;
 			c1->velocity_x = c2->velocity_x*0.9;
 			c1->acceleration_y = gravity;
+			c1->tempStatic=false;
+			c2->velocity_y = -c2->velocity_y*.2;
+			c2->velocity_x = -c2->velocity_x*.5;
+			c2->acceleration_x = 0.0;
+			if (c2->x>c1->x){
+				c2->x+=2;
+				c1->x-=2;
+			}
+			else {
+				c2->x-=2;
+				c1->x+=2;
+			}
+		}
+		else if (c2->tempStatic){
+			//std::cout<<"here"<<std::endl;
+			c2->velocity_y = c1->velocity_y;
+			c2->velocity_x = c1->velocity_x*0.9;
+			c2->acceleration_y = gravity;
+			c2->tempStatic=false;
+			c1->velocity_y = -c1->velocity_y*.2;
+			c1->velocity_x = -c1->velocity_x*.5;
+			c1->acceleration_x = 0.0;
+			if (c1->x>c2->x){
+				c1->x+=2;
+				c2->x-=2;
+			}
+			else {
+				c1->x-=2;
+				c2->x+=2;
+			}
+		}
+		else{
+			//std::cout<<c1->velocity_y<<std::endl;
+			//std::cout<<c2->velocity_y<<std::endl;
+			if(c1->y<c2->y ){ //&& c1->velocity_x>0
+				c1->y-=1;
+				c1->velocity_y = c2->velocity_y * 0.8;
+				c2->velocity_y = c2->velocity_y * 0.8;
+				if(c2->velocity_y<0){
+					c2->velocity_y=-c2->velocity_y;
+				}
+			}
+			else if (c1->y>c2->y ){ //&& c1->velocity_x<0
+				c2->y-=1;
+				c2->velocity_y = c1->velocity_y * 0.8;
+				c1->velocity_y = c1->velocity_y * 0.8;
+				if(c1->velocity_y<0){
+					c1->velocity_y=-c1->velocity_y;
+				}
+			}
+			if(c1->x<c2->x){
+				c1->x-=1;
+				c1->velocity_x = -abs(c2->velocity_x) * 0.6;
+				c1->acceleration_x = -abs(c2->acceleration_x) * 0.9;
+				c2->velocity_x = abs(c2->velocity_x) * 0.6;
+				c2->acceleration_x = abs(c2->acceleration_x) * 0.9;
+			}
+			else{
+				c2->x-=1;
+				c1->velocity_x = abs(c1->velocity_x) * 0.6;
+				c1->acceleration_x = abs(c1->acceleration_x) * 0.9;
+				c2->velocity_x = -abs(c1->velocity_x) * 0.6;
+				c2->acceleration_x = -abs(c1->acceleration_x) * 0.9;
+			}
+			//std::cout<<c1->velocity_y<<std::endl;
+			//std::cout<<c2->velocity_y<<std::endl;
+		}
+	}
+	else if((c1->shape==0 && c2->shape==1) || (c2->shape==1 && c1->shape==0)){ 
+		if (c1->tempStatic){
+			c1->velocity_y = c2->velocity_y;
+			c1->velocity_x = c2->velocity_x*0.9;
+			c1->acceleration_y = gravity;
+			c1->tempStatic=false;
 			c2->velocity_y = c2->velocity_y*.2;
 			c2->velocity_x = c2->velocity_x*.5;
 			c2->acceleration_x = 0.0;
 			if (c2->x>c1->x){
-				c2->x+=1;
+				c2->x+=2;
+				c1->x-=2;
 			}
 			else {
-				c2->x-=1;
+				c2->x-=2;
+				c1->x+=2;
 			}
 		}
-		else if (c2->velocity_y == 0.0 && c2->velocity_x == 0.0){
+		else if (c2->tempStatic){
 			c2->velocity_y = c1->velocity_y;
 			c2->velocity_x = c1->velocity_x*0.9;
 			c2->acceleration_y = gravity;
+			c2->tempStatic=false;
 			c1->velocity_y = c1->velocity_y*.2;
 			c1->velocity_x = c1->velocity_x*.5;
 			c1->acceleration_x = 0.0;
 			if (c1->x>c2->x){
-				c1->x+=1;
+				c1->x+=2;
+				c2->x-=2;
 			}
 			else {
-				c1->x-=1;
+				c1->x-=2;
+				c2->x+=2;
 			}
 		}
 		else{
 			if(c1->y<c2->y && c1->acceleration_x>0){
 				c1->y-=1;
-				c1->velocity_y = -c1->velocity_y * 0.3;
+				c1->velocity_y = -c1->velocity_y * 0.8;
 			}
 			else if (c1->y>c2->y && c1->acceleration_x<0){
 				c2->y-=1;
@@ -278,16 +462,16 @@ void collisions(Collider *c1, Collider *c2){
 			if(c1->x<c2->x){
 				c1->x-=1;
 				c1->velocity_x = -c1->velocity_x * 0.5;
-				c1->acceleration_x = -c1->acceleration_x;
+				c1->acceleration_x = -c1->acceleration_x * 0.9;
 				c2->velocity_x = -c2->velocity_x * 0.5;
-				c2->acceleration_x = -c2->acceleration_x;
+				c2->acceleration_x = -c2->acceleration_x * 0.9;
 			}
 			else{
 				c2->x-=1;
 				c1->velocity_x = -c1->velocity_x * 0.5;
-				c1->acceleration_x = -c1->acceleration_x;
+				c1->acceleration_x = -c1->acceleration_x * 0.9;
 				c2->velocity_x = -c2->velocity_x * 0.5;
-				c2->acceleration_x = -c2->acceleration_x;
+				c2->acceleration_x = -c2->acceleration_x * 0.9;
 			}
 		}
 	}
@@ -352,11 +536,11 @@ void velocity_cutoff(Collider *c1){
 	//if (!c1->tempStatic){
 		//std::cout<<c1->velocity_x<<std::endl;
 		//std::cout<<c1->velocity_y<<std::endl;
-		if(abs(c1->velocity_y)<=2 && abs(c1->velocity_x) <2){
-			c1->tempStatic=true;
+		if((abs(c1->velocity_y)<=20 && abs(c1->velocity_x)<5)  || abs(c1->velocity_y)<5 && abs(c1->velocity_x) <=20){
 			c1->velocity_y = 0;
 			c1->velocity_x = 0;
 			c1->acceleration_x=0;
+			c1->tempStatic=true;
 			//c1->y-=0.5;
 		}
 	//}
