@@ -37,4 +37,14 @@ void velocity_cutoff(Collider *c1) - determines when a collider's should stop mo
 
 setPostion(collider.x,collider.y) - is required to change positions after all physics calls.
 
+# Geometry Crash
+- Connor White
 
+Geometry Crash is a physics puzzle game with two levels currently.
+To play level 1 press ENTER, to play level 2 press the RIGHT ARROWS.
+
+The objective of the game is to get your green ball to smash the 3 orange balls on each level, with the help of other walls falling on top of the orange balls.
+
+The game is simple, the greenball will rotate up and down, pressing SPACE launches the ball, if the ball gets stuck, press E to reclaim it.
+
+The player only has 5 tries per level, good luck!
