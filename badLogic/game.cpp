@@ -9,14 +9,14 @@
 #include "physicsEngine.h"
 
 /*things to do still
-        check all collisions through a list
         buttons?
         wind?
 */
-void resetLevel1(Collider &ball, Collider &ball2, Collider &ball3, Collider &ball4, Collider &wall1, Collider &wall2, Collider &wall3, Collider &wall4, Collider &wall5, Collider &wall6, Collider &wall7, Collider &wall8, Collider &ground, Collider &wall_ground, Collider &platform1, Collider &platform2);
+void resetLevel1(Collider &ball, Collider &ball2, Collider &ball3, Collider &ball4, Collider &wall1, Collider &wall2, Collider &wall3, Collider &wall4, Collider &wall5, Collider &wall6, Collider &wall7, Collider &wall8, Collider &ground, Collider &wall_ground, Collider &platform1, Collider &platform2, Collider &platform3);
 
 using namespace sf;
 
+//change this to your directory?
 std::string resources(){
         return "/home/CS/users/cwhite/.linux/COS370/370Final/badLogic/resources/";
 }
@@ -29,7 +29,29 @@ int main()
 
     int window_height = 800;
 
+    Texture texture1;
+    Texture texture2;
+
+    if(!texture1.loadFromFile(resources() + "GeoBackground.jpg")){
+            std::cout<<"Error"<<std::endl;
+    }
+    texture1.loadFromFile(resources() + "GeoBackground.jpg");
+    Sprite background;
+    Vector2u size = texture1.getSize();
+    background.setTexture(texture1);
+    background.setOrigin(size.x/2, size.y/2-300);
     
+
+    if(!texture2.loadFromFile(resources() + "GeoMenu.jpg")){
+            std::cout<<"Error"<<std::endl;
+    }
+    texture2.loadFromFile(resources() + "GeoMenu.jpg");
+    Sprite menuBackground;
+    Vector2u size2 = texture2.getSize();
+    menuBackground.setTexture(texture2);
+    menuBackground.setOrigin(size2.x/2-150, size2.y/2-400);
+
+
 
     Collider ball;
     ball.shape=0;
@@ -257,6 +279,18 @@ int main()
     platform2.mass = 500.0;
     platform2.material = "hard";
 
+    Collider platform3;
+    platform3.shape=1;
+    platform3.x=350.0;
+    platform3.y=650.0;
+    platform3.radius=50;
+    platform3.radius2=15.0;
+    platform3.isStatic=true;
+    platform3.tempStatic=true;
+    platform3.mass = 500.0;
+    platform3.material = "hard";
+
+
     Collider box;
     box.shape=1;
     box.x=150;
@@ -282,10 +316,10 @@ int main()
 
     finished_text.setFont(font);
     finished_text.setCharacterSize(40);
-    finished_text.setPosition(window_width/2-100, window_height/2-100);
+    finished_text.setPosition(window_width-550, window_height/2-100);
     finished_text.setFillColor(Color::White);
 
-    finished_text.setString("Winner!\nPress Enter to Restart,\nright arrow for level 2");
+    finished_text.setString("Winner!\nPress Enter for level 1,\nRight arrow for level 2");
 
     Text menu_text;
 
@@ -294,7 +328,7 @@ int main()
     menu_text.setPosition(window_width-550, (window_height/2)-100);
     menu_text.setFillColor(Color::White);
 
-    menu_text.setString(" Geometry Crash\nPress Enter to Start!\nRight arrow for level 2");
+    menu_text.setString(" Geometry Crash\nPress Enter for level 1!\nRight arrow for level 2");
 
     Text lives_text;
     lives_text.setFont(font);
@@ -308,7 +342,7 @@ int main()
     restart_life_text.setPosition(100, 50);
     restart_life_text.setFillColor(Color::White);
 
-    restart_life_text.setString("Press E to kill the ball if stuck\n Press space to launch the ball");
+    restart_life_text.setString("Press E to kill the ball if stuck\nPress space to launch the ball");
     
 
     //Colors: gray=metal; green=rubber; red=plastic; orange=sticky
@@ -400,6 +434,11 @@ int main()
     ground_4.setSize(Vector2f(platform2.radius*2,platform2.radius2*2)); 
     ground_4.setFillColor(gray);
 
+    RectangleShape ground_5;
+    ground_5.setPosition(platform3.x, platform3.y);
+    ground_5.setSize(Vector2f(platform3.radius*2,platform3.radius2*2)); 
+    ground_5.setFillColor(gray);
+
     
     RectangleShape box_1;
     box_1.setPosition(box.x, box.y);
@@ -411,7 +450,7 @@ int main()
     point.setRadius(1);
     point.setFillColor(Color::Green);
 
-    Collider* colliders[] = {&ball, &ball2, &ball3, &ball4, &wall1, &wall2, &wall3, &wall4, &wall5, &wall6, &wall7, &wall8, &ground, &wall_ground, &platform1, &platform2};
+    Collider* colliders[] = {&ball, &ball2, &ball3, &ball4, &wall1, &wall2, &wall3, &wall4, &wall5, &wall6, &wall7, &wall8, &ground, &wall_ground, &platform1, &platform2, &platform3};
     
 
     int scene = 2;
@@ -489,11 +528,11 @@ int main()
                 }
 
                 if(player_lives < 1){
-                    finished_text.setString("Loser!\nPress Enter to Restart,\n right arrow for level 2");
+                    finished_text.setString("Loser!\nPress Enter for level 1,\nRight arrow for level 2");
                     scene=1;
                 }
         
-                do_collisions(colliders, 16, hit);
+                do_collisions(colliders, 17, hit);
 
                 velocityUpdate(&ball, DT);
                 velocityUpdate(&wall1, DT);
@@ -539,11 +578,13 @@ int main()
         if(scene==1){
                 player_lives = 1;
                 if(Keyboard::isKeyPressed(Keyboard::Enter)){
-                        resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2);
+                        resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2, platform3);
                         ground_3.setPosition(platform1.x,platform1.y);
                         ground_3.setSize(Vector2f(platform1.radius*2,platform1.radius2*2));
-                        ground_4.setPosition(platform1.x,platform1.y);
-                        ground_4.setSize(Vector2f(platform1.radius*2,platform1.radius2*2));
+                        ground_4.setPosition(platform2.x,platform2.y);
+                        ground_4.setSize(Vector2f(platform2.radius*2,platform2.radius2*2));
+                        ground_5.setPosition(platform3.x,platform3.y);
+                        ground_5.setSize(Vector2f(platform3.radius*2,platform3.radius2*2));
                         player_lives = 5;
                         enemies_alive=3;
                         ball2.hit=0;
@@ -557,10 +598,10 @@ int main()
                         ball2.hit=0;
                         ball3.hit=0;
                         ball4.hit=0;
-                        resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2);
+                        resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2, platform3);
                         
                         //level 2 
-                        wall1.x=400.0;
+                    wall1.x=400.0;
                     wall1.x=600.0;
                     wall1.y=window_height-400;
 
@@ -579,7 +620,7 @@ int main()
                     wall6.x=550.0;
                     wall6.y=window_height-150;
 
-                    wall7.x=400.0;
+                    wall7.x=475.0;
                     wall7.y=window_height-100;
 
                     wall8.x=450.0;
@@ -609,6 +650,14 @@ int main()
 
                     ground_4.setPosition(platform2.x,platform2.y);
                     ground_4.setSize(Vector2f(platform2.radius*2,platform2.radius2*2));
+
+                    platform3.radius=30.0;
+                    platform3.radius2=15.0;
+                    platform3.x=350.0;
+                    platform3.y=700.0;
+
+                    ground_5.setPosition(platform3.x,platform3.y);
+                    ground_5.setSize(Vector2f(platform3.radius*2,platform3.radius2*2));
 
                         
 
@@ -621,7 +670,7 @@ int main()
                         scene=0;
                 }
                 if(Keyboard::isKeyPressed(Keyboard::Right)){
-                    resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2);
+                    resetLevel1(ball, ball2, ball3, ball4, wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, ground, wall_ground, platform1, platform2, platform3);
                         
                         //level 2 
                     wall1.x=600.0;
@@ -642,7 +691,7 @@ int main()
                     wall6.x=550.0;
                     wall6.y=window_height-150;
 
-                    wall7.x=400.0;
+                    wall7.x=475.0;
                     wall7.y=window_height-100;
 
                     wall8.x=450.0;
@@ -672,6 +721,15 @@ int main()
 
                     ground_4.setPosition(platform2.x,platform2.y);
                     ground_4.setSize(Vector2f(platform2.radius*2,platform2.radius2*2));
+
+                    platform3.radius=30.0;
+                    platform3.radius2=15.0;
+                    platform3.x=350.0;
+                    platform3.y=700.0;
+
+                    ground_5.setPosition(platform3.x,platform3.y);
+                    ground_5.setSize(Vector2f(platform3.radius*2,platform3.radius2*2));
+
 
 
                     scene=3;
@@ -730,7 +788,7 @@ int main()
                 }
 
                 if(player_lives < 1){
-                    finished_text.setString("Loser!\nPress Enter to Restart,\n right arrow for level 2");
+                    finished_text.setString("Loser!\nPress Enter for level 1,\nRight arrow for level 2");
                     scene=1;
                 }
         
@@ -745,7 +803,6 @@ int main()
                 velocityUpdate(&wall6, DT);
                 velocityUpdate(&wall7, DT);
                 velocityUpdate(&wall8, DT);
-                std::cout<<enemies_alive<<std::endl;
 
                 if(ball2.hit >= 1000 && ball2.hit < 2000){
                     enemies_alive-=1;
@@ -796,6 +853,7 @@ int main()
                 barrier8.setPosition(wall8.x,wall8.y);
                 
                 window.clear();
+                window.draw(background);
                 window.draw(player);
                 if(ball2.hit <=1000){
                     window.draw(enemy);
@@ -806,6 +864,7 @@ int main()
                 if(ball4. hit<=1000){
                     window.draw(enemy3);
                 }
+                
                 window.draw(barrier1);
                 window.draw(barrier2);
                 window.draw(barrier3);
@@ -817,14 +876,19 @@ int main()
                 window.draw(ground_1);
                 window.draw(ground_2);
                 window.draw(ground_3);
-                window.draw(ground_4);
+                if(scene==3){
+                    window.draw(ground_4);
+                    window.draw(ground_5);
+                }
                 window.draw(lives_text);
                 window.draw(restart_life_text);
+                
                 window.display();
         }
         //ending scene
         if(scene==1){
                 window.clear();
+                window.draw(menuBackground);
                 window.draw(finished_text);
                 window.display();
         } 
@@ -832,6 +896,7 @@ int main()
         //menu scene
         if(scene==2){
                 window.clear();
+                window.draw(menuBackground);
                 window.draw(menu_text);
                 window.display();
         } 
@@ -843,7 +908,7 @@ int main()
 
 
 
-void resetLevel1(Collider &ball, Collider &ball2, Collider &ball3, Collider &ball4, Collider &wall1, Collider &wall2, Collider &wall3, Collider &wall4, Collider &wall5, Collider &wall6, Collider &wall7, Collider &wall8, Collider &ground, Collider &wall_ground, Collider &platform1, Collider &platform2){
+void resetLevel1(Collider &ball, Collider &ball2, Collider &ball3, Collider &ball4, Collider &wall1, Collider &wall2, Collider &wall3, Collider &wall4, Collider &wall5, Collider &wall6, Collider &wall7, Collider &wall8, Collider &ground, Collider &wall_ground, Collider &platform1, Collider &platform2, Collider &platform3){
     int window_width = 800;
     int window_height = 800;
     ball.shape=0;
@@ -1061,5 +1126,16 @@ void resetLevel1(Collider &ball, Collider &ball2, Collider &ball3, Collider &bal
     platform2.tempStatic=true;
     platform2.mass = 500.0;
     platform2.material = "hard";
+
+    platform3.shape=1;
+    platform3.x=0.0;
+    platform3.y=0.0;
+    platform3.radius=50;
+    platform3.radius2=15.0;
+    platform3.isStatic=true;
+    platform3.tempStatic=true;
+    platform3.mass = 500.0;
+    platform3.material = "hard";
+
 }
 
