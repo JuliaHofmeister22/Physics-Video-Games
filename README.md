@@ -58,6 +58,18 @@ The objective of the game is to get the green ball, along with any red balls tha
 
 There are different kind of materials that make up the platforms in the game, each of them altering the resulting velocities of objects in motion differently. The player has to think about how to line up the next move by considering how the level has been laid out, and what each part of the level is made up of. 
 
+![title](images/Title.png)
+
+This is the title screen of the game.
+
+![Webbed](images/web_shot.png)
+
+In this screenshot we can see how the web material on that middle rectangle to get the ball to stick to the ceiling.
+
+![Arrow](images/Arrow.png)
+
+In this shot, we see an arrow about to hit the red ball. This was activated by the green ball hitting the purple switch at the bottom of the screen.
+
 
 # Falling Physics
 Falling Physics is a physics puzzle game with 2 levels.
