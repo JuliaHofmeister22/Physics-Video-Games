@@ -77,7 +77,7 @@ Choose a level by clicking on the buttons on the Main Menu
 
 The objective of the game is to get the white ball to hit the orange platform. The only way to do this is to utilize blue walls and platforms, and/or the other balls in the game. The game is fairly simple to understand - just click on any blue objects that you want to remove from the screen - but the puzzles themselves are challenging.
 
-This game uses the physicsEngine that our team created this semester. Some examples of how the engine is used is documented in the images below:
+This game uses the physicsEngine that our team created this semester. I added one variable option to the Collider struct called 'canDisappear'.  Setting this value to true or false determines whether or not an object can be removed from the game. Some examples of how the engine is used is documented in the images below:
 
 In this image, the ball is being affected by gravity and has an x and y velocity associated with it, so it falls at an increasing rate until it collides with another object.
 
