@@ -67,13 +67,21 @@ The objective of the game is to get the white ball to hit the orange platform. T
 
 This game uses the physicsEngine that our team created this semester. Some examples of how the engine is used is documented in the images below:
 
-In this image, the balls are being affected by gravity and have an x and y velocity associated with them, so they fall at an increasing rate until they collide with another object.
+In this image, the ball is being affected by gravity and has an x and y velocity associated with it, so it falls at an increasing rate until it collides with another object.
 
-In this image, the white ball has collided with the green platform, which has a "hard" material.  This results in the ball retaining most of it's momentum, but bouncing and changing directions appropriately. (see physicsEngine.cpp collides())
+!["gravity"](images/falling_ball.png)
+
+In this image, the white ball has collided with the green platform, which has a "hard" material.  This results in the ball retaining most of it's momentum, but bouncing and changing directions appropriately. (see physicsEngine.cpp collides()  and static_absorb())
+
+![ball on green platform](images/colliding_ball_on_platform.png width)
 
 In this image, the balls have collided, changing the directions of both balls according to the angle at which they collided with each other. (see physicsEngine.cpp collides())
 
+![ball colliding](images/colliding_balls.png)
+
 In this image, the white ball has collided with the orange platform. The orange platform has a "sticky" material. This results in causing the ball to lose all velocity and acceleration, as if the ball has stuck to the platform (see physicsEngine.cpp static_absorb())
+
+![ball on orange platform](images/ball_on_orange.png)
 
 A final note about a feature (not a bug..). The reset button can only be pushed once.  Pushing it twice will result in a segmentation fault. To play the game consistently, you must fail and return to the home screen before playing the level again.  
 
