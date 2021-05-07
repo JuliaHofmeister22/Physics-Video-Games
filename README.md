@@ -85,7 +85,7 @@ In this image, the ball is being affected by gravity and has an x and y velocity
 
 In this image, the white ball has collided with the green platform, which has a "hard" material.  This results in the ball retaining most of it's momentum, but bouncing and changing directions appropriately. (see physicsEngine.cpp collides()  and static_absorb())
 
-![ball on green platform](images/colliding_ball_on_platform.png width)
+![ball on green platform](images/colliding_ball_on_platform.png)
 
 In this image, the balls have collided, changing the directions of both balls according to the angle at which they collided with each other. (see physicsEngine.cpp collides())
 
