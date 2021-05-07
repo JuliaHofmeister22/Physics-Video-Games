@@ -2,14 +2,14 @@
 requires SFML
 
 Collider Structure - has variable options to pair a graphical shape with a collider structure
-- int shape 0 = circle
-- int shape 1 = square
+- int shape = what kind of shape it is (0=circle, 1=rectangle)
 - float x = x position
 - float y = y poisiton
 - float radius = radius or width
 - float radius2 = height
 - bool isStatic = whether the object is able to move or not
 - bool tempStatic = whether the object is moving or not
+- bool            = whether the object can be removed or not
 - float velocity_y = velocity in the y direction
 - float velocity_x = velocity in the x direction
 - float acceleration_y = acceleration in the y direction
