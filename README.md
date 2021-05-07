@@ -49,3 +49,13 @@ The game is simple, the greenball will rotate up and down, pressing SPACE launch
 
 The player only has 5 tries per level, good luck!
 
+# Goal Chaser
+- Ryan Costello
+
+Goal Chaser is a physics puzzle game with four levels.
+
+The objective of the game is to get the green ball, along with any red balls that may be in the level, into the blue goal. This is accomplished by dragging the mouse to apply a force to the ball to make it collide with the other objects in the level. You only have a limited number of moves per level, so you have to be logical in your playstyle.
+
+There are different kind of materials that make up the platforms in the game, each of them altering the resulting velocities of objects in motion differently. The player has to think about how to line up the next move by considering how the level has been laid out, and what each part of the level is made up of. 
+
+
