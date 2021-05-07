@@ -59,3 +59,22 @@ The objective of the game is to get the green ball, along with any red balls tha
 There are different kind of materials that make up the platforms in the game, each of them altering the resulting velocities of objects in motion differently. The player has to think about how to line up the next move by considering how the level has been laid out, and what each part of the level is made up of. 
 
 
+# Falling Physics
+Falling Physics is a physics puzzle game with 2 levels.
+Choose a level by clicking on the buttons on the Main Menu
+
+The objective of the game is to get the white ball to hit the orange platform. The only way to do this is to utilize blue walls and platforms, and/or the other balls in the game. The game is fairly simple to understand - just click on any blue objects that you want to remove from the screen - but the puzzles themselves are challenging.
+
+This game uses the physicsEngine that our team created this semester. Some examples of how the engine is used is documented in the images below:
+
+In this image, the balls are being affected by gravity and have an x and y velocity associated with them, so they fall at an increasing rate until they collide with another object.
+
+In this image, the white ball has collided with the green platform, which has a "hard" material.  This results in the ball retaining most of it's momentum, but bouncing and changing directions appropriately. (see physicsEngine.cpp collides())
+
+In this image, the balls have collided, changing the directions of both balls according to the angle at which they collided with each other. (see physicsEngine.cpp collides())
+
+In this image, the white ball has collided with the orange platform. The orange platform has a "sticky" material. This results in causing the ball to lose all velocity and acceleration, as if the ball has stuck to the platform (see physicsEngine.cpp static_absorb())
+
+A final note about a feature (not a bug..). The reset button can only be pushed once.  Pushing it twice will result in a segmentation fault. To play the game consistently, you must fail and return to the home screen before playing the level again.  
+
+Good luck!
